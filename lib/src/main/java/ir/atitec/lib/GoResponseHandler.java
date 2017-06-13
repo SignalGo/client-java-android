@@ -5,10 +5,6 @@ import com.google.common.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-import sun.net.www.content.text.Generic;
-import sun.reflect.generics.factory.GenericsFactory;
-import sun.rmi.runtime.Log;
-
 /**
  * Created by whiteman on 7/12/2016.
  */

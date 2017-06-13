@@ -11,7 +11,6 @@ import ir.atitec.lib.models.GoCompressMode;
 import ir.atitec.lib.util.GoConvertorHelper;
 import ir.atitec.lib.models.GoDataType;
 import ir.atitec.lib.util.GoBackStackHelper;
-import sun.rmi.runtime.Log;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
