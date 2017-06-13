@@ -1,4 +1,4 @@
-package ir.atitec.lib;
+package ir.atitec.siganlgo;
 
 import java.io.IOException;
 

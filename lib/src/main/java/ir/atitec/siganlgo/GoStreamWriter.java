@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ir.atitec.lib;
+package ir.atitec.siganlgo;
 
-import ir.atitec.lib.models.MethodCallInfo;
-import ir.atitec.lib.models.MethodCallbackInfo;
-import ir.atitec.lib.util.GoAsyncHelper;
-import ir.atitec.lib.util.GoConvertorHelper;
+import ir.atitec.siganlgo.models.MethodCallInfo;
+import ir.atitec.siganlgo.models.MethodCallbackInfo;
+import ir.atitec.siganlgo.util.GoAsyncHelper;
+import ir.atitec.siganlgo.util.GoConvertorHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.io.IOException;

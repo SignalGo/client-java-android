@@ -1,4 +1,4 @@
-package ir.atitec.lib.models;
+package ir.atitec.siganlgo.models;
 
 /**
  * Created by mehdi akbarian on 2016-08-06.
