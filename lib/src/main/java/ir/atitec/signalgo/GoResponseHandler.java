@@ -1,5 +1,5 @@
 
-package ir.atitec.siganlgo;
+package ir.atitec.signalgo;
 
 import com.google.common.reflect.TypeToken;
 

@@ -1,16 +1,16 @@
-package ir.atitec.siganlgo;
+package ir.atitec.signalgo;
 
-import ir.atitec.siganlgo.annotations.GoServiceName;
-import ir.atitec.siganlgo.models.GoKeyValue;
-import ir.atitec.siganlgo.models.MethodCallInfo;
-import ir.atitec.siganlgo.models.MethodCallbackInfo;
-import ir.atitec.siganlgo.util.GoAsyncHelper;
-import ir.atitec.siganlgo.util.GoAutoResetEvent;
-import ir.atitec.siganlgo.util.GoClientHelper;
-import ir.atitec.siganlgo.models.GoCompressMode;
-import ir.atitec.siganlgo.util.GoConvertorHelper;
-import ir.atitec.siganlgo.models.GoDataType;
-import ir.atitec.siganlgo.util.GoBackStackHelper;
+import ir.atitec.signalgo.annotations.GoServiceName;
+import ir.atitec.signalgo.models.GoKeyValue;
+import ir.atitec.signalgo.models.MethodCallInfo;
+import ir.atitec.signalgo.models.MethodCallbackInfo;
+import ir.atitec.signalgo.util.GoAsyncHelper;
+import ir.atitec.signalgo.util.GoAutoResetEvent;
+import ir.atitec.signalgo.util.GoClientHelper;
+import ir.atitec.signalgo.models.GoCompressMode;
+import ir.atitec.signalgo.util.GoConvertorHelper;
+import ir.atitec.signalgo.models.GoDataType;
+import ir.atitec.signalgo.util.GoBackStackHelper;
 
 import java.io.*;
 import java.lang.annotation.Annotation;

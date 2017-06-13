@@ -1,7 +1,7 @@
-package ir.atitec.siganlgo;
+package ir.atitec.signalgo;
 
-import ir.atitec.siganlgo.models.GoCompressMode;
-import ir.atitec.siganlgo.models.GoDataType;
+import ir.atitec.signalgo.models.GoCompressMode;
+import ir.atitec.signalgo.models.GoDataType;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,14 +1,14 @@
-package ir.atitec.siganlgo;
+package ir.atitec.signalgo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import ir.atitec.siganlgo.annotations.GoMethodName;
-import ir.atitec.siganlgo.annotations.GoServiceName;
-import ir.atitec.siganlgo.models.MethodCallInfo;
-import ir.atitec.siganlgo.models.MethodCallbackInfo;
-import ir.atitec.siganlgo.models.ParameterInfo;
-import ir.atitec.siganlgo.util.GoAsyncHelper;
-import ir.atitec.siganlgo.util.GoConvertorHelper;
+import ir.atitec.signalgo.annotations.GoMethodName;
+import ir.atitec.signalgo.annotations.GoServiceName;
+import ir.atitec.signalgo.models.MethodCallInfo;
+import ir.atitec.signalgo.models.MethodCallbackInfo;
+import ir.atitec.signalgo.models.ParameterInfo;
+import ir.atitec.signalgo.util.GoAsyncHelper;
+import ir.atitec.signalgo.util.GoConvertorHelper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

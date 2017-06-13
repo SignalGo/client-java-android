@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ir.atitec.siganlgo.util;
+package ir.atitec.signalgo.util;
 
-import ir.atitec.siganlgo.models.GoKeyValue;
-import ir.atitec.siganlgo.models.ParameterInfo;
+import ir.atitec.signalgo.models.GoKeyValue;
+import ir.atitec.signalgo.models.ParameterInfo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 

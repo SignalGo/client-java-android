@@ -1,4 +1,4 @@
-package ir.atitec.siganlgo;
+package ir.atitec.signalgo;
 
 import java.io.IOException;
 

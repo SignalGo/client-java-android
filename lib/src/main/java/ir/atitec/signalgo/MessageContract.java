@@ -1,4 +1,4 @@
-package ir.atitec.siganlgo;
+package ir.atitec.signalgo;
 
 /**
  * Created by whiteman on 7/12/2016.
