@@ -5,5 +5,5 @@ package ir.atitec.signalgo.models;
  */
 
 public interface MonitorableErrorMessage {
-    void onMonitor(String message,int errorCode);
+    void onMonitor(String message,int errorCode,boolean canPrint);
 }

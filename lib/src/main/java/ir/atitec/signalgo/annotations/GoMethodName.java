@@ -52,4 +52,5 @@ public @interface GoMethodName {
 
     PriorityType priority() default PriorityType.low;
 
+    boolean printErrors() default true;
 }

@@ -30,7 +30,7 @@ public class TestService implements ClientDuplex {
         this.context = context;
         Main.connector.setMonitorableErrorMessage(new MonitorableErrorMessage() {
             @Override
-            public void onMonitor(String message,int errorCode) {
+            public void onMonitor(String message,int errorCode,boolean b) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                 if(errorCode == 0){
                     hello();

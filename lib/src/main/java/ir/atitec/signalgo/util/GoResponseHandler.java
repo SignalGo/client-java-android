@@ -23,9 +23,10 @@ public abstract class GoResponseHandler<T> {
     public GoResponseHandler(){
         typeToken = new TypeToken<MessageContract<T>>(getClass()) {};
     }
-
+    QueueMethods queueMethods;
 
     public void postResponse(final MessageContract<T> messageContract, final QueueMethods queueMethods) {
+        this.queueMethods = queueMethods;
         Needle.onMainThread().execute(new Runnable() {
             @Override
             public void run() {
@@ -73,22 +74,22 @@ public abstract class GoResponseHandler<T> {
             return;
         }
         if (handleMessage != null) {
-            connector.getMonitorableErrorMessage().onMonitor(handleMessage,errorCode);
+            connector.getMonitorableErrorMessage().onMonitor(handleMessage,errorCode,queueMethods.goMethodName.printErrors());
         } else {
-            connector.getMonitorableErrorMessage().onMonitor(message,errorCode);
+            connector.getMonitorableErrorMessage().onMonitor(message,errorCode,queueMethods.goMethodName.printErrors());
         }
     }
 
     public void onConnectionError() {
         if (connector.getMonitorableErrorMessage() == null)
             return;
-        connector.getMonitorableErrorMessage().onMonitor("خطا در ارتباط با سرور!",-1);
+        connector.getMonitorableErrorMessage().onMonitor("خطا در ارتباط با سرور!",-1,queueMethods.goMethodName.printErrors());
     }
 
 
     public void onAbort() {
         if (connector.getMonitorableErrorMessage() == null)
             return;
-        connector.getMonitorableErrorMessage().onMonitor("کمی صبر کنید، سپس درخواستتان را مجدد ارسال کنید!",-2);
+        connector.getMonitorableErrorMessage().onMonitor("کمی صبر کنید، سپس درخواستتان را مجدد ارسال کنید!",-2,queueMethods.goMethodName.printErrors());
     }
 }
