@@ -130,7 +130,7 @@ public class Connector {
 
 
     private Connector connect(String hostName, int port) throws IOException {
-        this.notifyListener(GoSocketListener.SocketState.connecting);
+        this.notifyListener(GoSocketListener.SocketState.Connecting);
         this.mHostName = hostName;
         this.mPort = port;
         socket = new Socket();
@@ -430,7 +430,7 @@ public class Connector {
                                 System.out.println(queueMethods.methodName + " " + o.toString());
                             else
                                 System.out.println(queueMethods.methodName + " null Response");
-                            queueMethods.goResponseHandler.onResponse((MessageContract) o, queueMethods);
+                            queueMethods.goResponseHandler.postResponse((MessageContract) o, queueMethods);
                         }
 
                     } catch (Exception ex) {

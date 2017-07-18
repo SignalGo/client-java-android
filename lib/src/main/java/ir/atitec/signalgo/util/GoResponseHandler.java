@@ -25,7 +25,7 @@ public abstract class GoResponseHandler<T> {
     }
 
 
-    public void onResponse(final MessageContract<T> messageContract, final QueueMethods queueMethods) {
+    public void postResponse(final MessageContract<T> messageContract, final QueueMethods queueMethods) {
         Needle.onMainThread().execute(new Runnable() {
             @Override
             public void run() {
@@ -34,7 +34,7 @@ public abstract class GoResponseHandler<T> {
                 } else if (messageContract != null && !messageContract.isSuccess) {
                     onError(messageContract.errorCode, messageContract.message, errorMessage(queueMethods.goMethodName.errors(), messageContract.errorCode));
                 } else {
-                    connectionError();
+                    onConnectionError();
                 }
             }
         });
@@ -79,7 +79,7 @@ public abstract class GoResponseHandler<T> {
         }
     }
 
-    public void connectionError() {
+    public void onConnectionError() {
         if (connector.getMonitorableErrorMessage() == null)
             return;
         connector.getMonitorableErrorMessage().onMonitor("خطا در ارتباط با سرور!",-1);

@@ -11,7 +11,7 @@ package ir.atitec.signalgo.util;
  */
 public interface GoSocketListener {
     public enum SocketState{
-        Connected,connecting,Reconnecting,Disconnected;
+        Connected,Connecting,Reconnecting,Disconnected;
     }
     void onSocketChange(SocketState lastState, SocketState correntState);
     
