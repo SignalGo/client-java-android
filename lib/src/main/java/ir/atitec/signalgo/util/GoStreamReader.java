@@ -1,4 +1,4 @@
-package ir.atitec.signalgo;
+package ir.atitec.signalgo.util;
 
 import ir.atitec.signalgo.models.GoCompressMode;
 import ir.atitec.signalgo.models.GoDataType;

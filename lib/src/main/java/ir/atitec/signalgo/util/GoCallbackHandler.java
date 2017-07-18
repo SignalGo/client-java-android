@@ -1,7 +1,8 @@
-package ir.atitec.signalgo;
+package ir.atitec.signalgo.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import ir.atitec.signalgo.Connector;
 import ir.atitec.signalgo.annotations.GoMethodName;
 import ir.atitec.signalgo.annotations.GoServiceName;
 import ir.atitec.signalgo.models.MethodCallInfo;
