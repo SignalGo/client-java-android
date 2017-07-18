@@ -12,7 +12,7 @@ import android.widget.Toast;
 import ir.atitec.signalgo.models.MonitorableErrorMessage;
 import ir.atitec.signalgo.util.ClientDuplex;
 import ir.atitec.signalgo.Connector;
-import ir.atitec.signalgo.util.GoResponseHandlerV2;
+import ir.atitec.signalgo.util.GoResponseHandler;
 import ir.atitec.signalgo.annotations.GoError;
 import ir.atitec.signalgo.annotations.GoMethodName;
 import ir.atitec.signalgo.annotations.GoServiceName;
@@ -43,16 +43,16 @@ public class TestService implements ClientDuplex {
             errors = {@GoError(errorCode = 34, message = "نام کاربری و یا کلمه عبور اشتباه است!"), @GoError(errorCode = 10, message = "hello")}
     )
     public void hello() {
-        GoResponseHandlerV2 goResponseHandlerV2 = new GoResponseHandlerV2<PassengerInfo>() {
+        GoResponseHandler goResponseHandler = new GoResponseHandler<PassengerInfo>() {
 
             @Override
             public void onSuccess(PassengerInfo p) {
                 Log.e("loginPassenger", "success");
             }
         };
-//        goResponseHandlerV2.setTypeToken(new TypeToken<PassengerInfo>(PassengerInfo.class) {
+//        goResponseHandler.setTypeToken(new TypeToken<PassengerInfo>(PassengerInfo.class) {
 //        });
-        Main.connector.autoInvokeAsync(goResponseHandlerV2, "09354218678", "4af47d46-6bc4-4996-985c-0604e69af943");
+        Main.connector.autoInvokeAsync(goResponseHandler, "09354218678", "4af47d46-6bc4-4996-985c-0604e69af943");
     }
 
     @Override
@@ -64,7 +64,7 @@ public class TestService implements ClientDuplex {
             errors = {@GoError(errorCode = 30, message = "کلید وارد شده نامعتبر است"), @GoError(errorCode = 0, message = "hello")}
     )
     public void hello2() {
-        Main.connector.autoInvokeAsync(new GoResponseHandlerV2<Object>() {
+        Main.connector.autoInvokeAsync(new GoResponseHandler<Object>() {
 
             @Override
             public void onSuccess(Object o) {

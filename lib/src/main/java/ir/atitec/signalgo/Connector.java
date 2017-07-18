@@ -1,8 +1,5 @@
 package ir.atitec.signalgo;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JavaType;
-
 import ir.atitec.signalgo.annotations.GoMethodName;
 import ir.atitec.signalgo.annotations.GoServiceName;
 import ir.atitec.signalgo.models.GoKeyValue;
@@ -19,7 +16,7 @@ import ir.atitec.signalgo.models.GoCompressMode;
 import ir.atitec.signalgo.util.GoConvertorHelper;
 import ir.atitec.signalgo.models.GoDataType;
 import ir.atitec.signalgo.util.GoBackStackHelper;
-import ir.atitec.signalgo.util.GoResponseHandlerV2;
+import ir.atitec.signalgo.util.GoResponseHandler;
 import ir.atitec.signalgo.util.GoSocketListener;
 import ir.atitec.signalgo.util.GoStreamReader;
 import ir.atitec.signalgo.util.GoStreamWriter;
@@ -371,7 +368,7 @@ public class Connector {
 //    }
 //
 
-    public void autoInvokeAsync(final GoResponseHandlerV2 goResponseHandler, final Object... param) {
+    public void autoInvokeAsync(final GoResponseHandler goResponseHandler, final Object... param) {
         try {
             goResponseHandler.setConnector(this);
             if (onRecievedExeption || !socket.isConnected())
@@ -381,7 +378,7 @@ public class Connector {
             QueueMethods queueMethods = new QueueMethods();
             queueMethods.methodName = methodName.name();
             queueMethods.serviceName = serviceName;
-            queueMethods.goResponseHandlerV2 = goResponseHandler;
+            queueMethods.goResponseHandler = goResponseHandler;
             queueMethods.param = param;
             queueMethods.goMethodName = methodName;
             queueMethods.priority = methodName.priority().getValue();
@@ -411,7 +408,7 @@ public class Connector {
                     Needle.onMainThread().execute(new Runnable() {
                         @Override
                         public void run() {
-                            queueMethods.goResponseHandlerV2.onAbort();
+                            queueMethods.goResponseHandler.onAbort();
                         }
                     });
                 }
@@ -428,12 +425,12 @@ public class Connector {
                     }
                     try {
                         if (queueMethods != null) {
-                            Object o = invoke(queueMethods.methodName, queueMethods.serviceName, queueMethods.goResponseHandlerV2.getType(), queueMethods.param);
+                            Object o = invoke(queueMethods.methodName, queueMethods.serviceName, queueMethods.goResponseHandler.getType(), queueMethods.param);
                             if (o != null)
                                 System.out.println(queueMethods.methodName + " " + o.toString());
                             else
                                 System.out.println(queueMethods.methodName + " null Response");
-                            queueMethods.goResponseHandlerV2.onResponse((MessageContract) o, queueMethods);
+                            queueMethods.goResponseHandler.onResponse((MessageContract) o, queueMethods);
                         }
 
                     } catch (Exception ex) {

@@ -17,10 +17,10 @@ import needle.Needle;
 /**
  * Created by whiteman on 7/12/2016.
  */
-public abstract class GoResponseHandlerV2<T> {
+public abstract class GoResponseHandler<T> {
     private Connector connector;
 
-    public GoResponseHandlerV2(){
+    public GoResponseHandler(){
         typeToken = new TypeToken<MessageContract<T>>(getClass()) {};
     }
 
