@@ -286,7 +286,7 @@ public class Connector {
         for (Map.Entry<String, ClientDuplex> entry : mPendingServices.entrySet()) {
             syncService(entry.getKey());
         }
-        currentState = GoSocketListener.SocketState.Connected;
+//        currentState = GoSocketListener.SocketState.Connected;
         if (socketListener != null) {
             socketListener.onSocketChange(lastState, currentState);
         }
