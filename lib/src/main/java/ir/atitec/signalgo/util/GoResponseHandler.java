@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 
 import ir.atitec.signalgo.Connector;
 import ir.atitec.signalgo.annotations.GoError;
+import ir.atitec.signalgo.annotations.GoMethodName;
 import ir.atitec.signalgo.models.MessageContract;
 import ir.atitec.signalgo.models.QueueMethods;
 import needle.Needle;
@@ -23,22 +24,25 @@ public abstract class GoResponseHandler<T> {
     public GoResponseHandler(){
         typeToken = new TypeToken<MessageContract<T>>(getClass()) {};
     }
-    QueueMethods queueMethods;
+    GoMethodName goMethodName;
 
-    public void postResponse(final MessageContract<T> messageContract, final QueueMethods queueMethods) {
-        this.queueMethods = queueMethods;
+    public void postResponse(final MessageContract<T> messageContract) {
         Needle.onMainThread().execute(new Runnable() {
             @Override
             public void run() {
                 if (messageContract != null && messageContract.isSuccess) {
                     onSuccess(messageContract.data);
                 } else if (messageContract != null && !messageContract.isSuccess) {
-                    onError(messageContract.errorCode, messageContract.message, errorMessage(queueMethods.goMethodName.errors(), messageContract.errorCode));
+                    onError(messageContract.errorCode, messageContract.message, errorMessage(goMethodName.errors(), messageContract.errorCode));
                 } else {
                     onConnectionError();
                 }
             }
         });
+    }
+
+    public void setGoMethodName(GoMethodName goMethodName) {
+        this.goMethodName = goMethodName;
     }
 
     public void setConnector(Connector connector) {
@@ -74,22 +78,22 @@ public abstract class GoResponseHandler<T> {
             return;
         }
         if (handleMessage != null) {
-            connector.getMonitorableErrorMessage().onMonitor(handleMessage,errorCode,queueMethods.goMethodName.printErrors());
+            connector.getMonitorableErrorMessage().onMonitor(handleMessage,errorCode,goMethodName.printErrors());
         } else {
-            connector.getMonitorableErrorMessage().onMonitor(message,errorCode,queueMethods.goMethodName.printErrors());
+            connector.getMonitorableErrorMessage().onMonitor(message,errorCode,goMethodName.printErrors());
         }
     }
 
     public void onConnectionError() {
         if (connector.getMonitorableErrorMessage() == null)
             return;
-        connector.getMonitorableErrorMessage().onMonitor("خطا در ارتباط با سرور!",-1,queueMethods.goMethodName.printErrors());
+        connector.getMonitorableErrorMessage().onMonitor("خطا در ارتباط با سرور!",-1,goMethodName.printErrors());
     }
 
 
     public void onAbort() {
         if (connector.getMonitorableErrorMessage() == null)
             return;
-        connector.getMonitorableErrorMessage().onMonitor("کمی صبر کنید، سپس درخواستتان را مجدد ارسال کنید!",-2,queueMethods.goMethodName.printErrors());
+        connector.getMonitorableErrorMessage().onMonitor("کمی صبر کنید، سپس درخواستتان را مجدد ارسال کنید!",-2,goMethodName.printErrors());
     }
 }

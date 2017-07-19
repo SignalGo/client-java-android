@@ -370,11 +370,12 @@ public class Connector {
 
     public void autoInvokeAsync(final GoResponseHandler goResponseHandler, final Object... param) {
         try {
-            goResponseHandler.setConnector(this);
-            if (onRecievedExeption || !socket.isConnected())
-                goResponseHandler.onAbort();
             final String serviceName = GoBackStackHelper.getServiceName();
             final GoMethodName methodName = GoBackStackHelper.getMethodName();
+            goResponseHandler.setConnector(this);
+            goResponseHandler.setGoMethodName(methodName);
+            if (onRecievedExeption || !socket.isConnected())
+                goResponseHandler.onAbort();
             QueueMethods queueMethods = new QueueMethods();
             queueMethods.methodName = methodName.name();
             queueMethods.serviceName = serviceName;
@@ -430,7 +431,7 @@ public class Connector {
                                 System.out.println(queueMethods.methodName + " " + o.toString());
                             else
                                 System.out.println(queueMethods.methodName + " null Response");
-                            queueMethods.goResponseHandler.postResponse((MessageContract) o, queueMethods);
+                            queueMethods.goResponseHandler.postResponse((MessageContract) o);
                         }
 
                     } catch (Exception ex) {
