@@ -374,8 +374,12 @@ public class Connector {
             final GoMethodName methodName = GoBackStackHelper.getMethodName();
             goResponseHandler.setConnector(this);
             goResponseHandler.setGoMethodName(methodName);
-            if (onRecievedExeption || !socket.isConnected())
+            if (onRecievedExeption || !socket.isConnected()) {
                 goResponseHandler.onAbort();
+                if (currentState == GoSocketListener.SocketState.Connected) {
+                    notifyListener(GoSocketListener.SocketState.Disconnected);
+                }
+            }
             QueueMethods queueMethods = new QueueMethods();
             queueMethods.methodName = methodName.name();
             queueMethods.serviceName = serviceName;
