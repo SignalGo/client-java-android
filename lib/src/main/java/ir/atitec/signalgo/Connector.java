@@ -377,8 +377,10 @@ public class Connector {
             if (onRecievedExeption || !socket.isConnected()) {
                 goResponseHandler.onAbort();
                 if (currentState == GoSocketListener.SocketState.Connected) {
+
                     notifyListener(GoSocketListener.SocketState.Disconnected);
                 }
+
             }
             QueueMethods queueMethods = new QueueMethods();
             queueMethods.methodName = methodName.name();
