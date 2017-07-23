@@ -377,10 +377,9 @@ public class Connector {
             if (onRecievedExeption || !socket.isConnected()) {
                 goResponseHandler.onAbort();
                 if (currentState == GoSocketListener.SocketState.Connected) {
-
                     notifyListener(GoSocketListener.SocketState.Disconnected);
                 }
-
+                return;
             }
             QueueMethods queueMethods = new QueueMethods();
             queueMethods.methodName = methodName.name();
@@ -441,6 +440,7 @@ public class Connector {
                         }
 
                     } catch (Exception ex) {
+                        queueMethods.goResponseHandler.postResponse(null);
                         exceptionHandler(ex);
                     }
                 }
