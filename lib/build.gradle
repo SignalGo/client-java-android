@@ -27,6 +27,7 @@ dependencies {
     compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
     compile 'com.google.guava:guava:19.0'
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk7', version: '2.6.7'
+    compile 'com.zsoltsafrany:needle:1.0.0'
 }
 
 buildscript {
