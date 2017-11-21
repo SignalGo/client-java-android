@@ -22,7 +22,7 @@ public abstract class GoResponseHandler<T> {
     private Connector connector;
 
     public GoResponseHandler(){
-        typeToken = new TypeToken<MessageContract<T>>(getClass()) {};
+//        typeToken = new TypeToken<MessageContract<T>>(getClass()) {};
     }
     GoMethodName goMethodName;
 
@@ -66,6 +66,10 @@ public abstract class GoResponseHandler<T> {
 //        this.typeToken = new TypeToken<MessageContract<T>>(typeToken.getRawType()) {
 //        };
 //    }
+
+    public void setTypeToken(TypeToken<MessageContract<T>> typeToken) {
+        this.typeToken = typeToken;
+    }
 
     public Type getType() {
         return typeToken.getType();
