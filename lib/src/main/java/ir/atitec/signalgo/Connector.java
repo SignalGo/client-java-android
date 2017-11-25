@@ -376,6 +376,7 @@ public class Connector {
             goResponseHandler.setGoMethodName(methodName);
             if (onRecievedExeption || !socket.isConnected()) {
                 goResponseHandler.onAbort();
+                System.out.println(methodName.name() + " aborted");
                 if (currentState == GoSocketListener.SocketState.Connected) {
                     notifyListener(GoSocketListener.SocketState.Disconnected);
                 }
@@ -392,6 +393,7 @@ public class Connector {
             boolean b = queueMethodses.offer(queueMethods);
             if (!b) {
                 goResponseHandler.onAbort();
+                System.out.println(methodName.name() + " aborted");
             }
         } catch (Exception ex) {
             exceptionHandler(ex);

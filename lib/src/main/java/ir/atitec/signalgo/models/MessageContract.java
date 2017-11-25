@@ -9,9 +9,10 @@ public class MessageContract<T> {
     public boolean isSuccess;
     public String message;
     public int errorCode;
+    public String stackTrace;
 
     @Override
     public String toString() {
-        return "success: " + isSuccess + " ErrorMessage: " + message + " errorCode: " + errorCode;
+        return "success: " + isSuccess + " ErrorMessage: " + message + " errorCode: " + errorCode + " stackTrace : " + stackTrace;
     }
 }
