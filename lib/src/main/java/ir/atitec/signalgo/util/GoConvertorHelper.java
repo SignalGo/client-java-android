@@ -10,6 +10,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.introspect.ObjectIdInfo;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
@@ -19,6 +22,8 @@ import org.joda.time.DateTimeZone;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+
+import ir.atitec.signalgo.models.JSOGGenerator;
 
 /**
  * @author mehdi akbarian
@@ -45,6 +50,8 @@ public class GoConvertorHelper {
             module.addSerializer(DateTime.class, new DateTimeSerializer());
             module.addDeserializer(DateTime.class, new DateTimeDeserializer());
             mapper.registerModule(module);
+            mapper.setAnnotationIntrospector(new MyJacksonAnnotationIntrospector());
+
         }
         return mapper;
     }
@@ -123,6 +130,23 @@ public class GoConvertorHelper {
                         +"' from ("+node.getClass().getName()+"): "+node);
             }
             return new JSOGRef(n.asInt());
+        }
+    }
+
+    public static class MyJacksonAnnotationIntrospector extends JacksonAnnotationIntrospector {
+        @Override
+        public ObjectIdInfo findObjectIdInfo(final Annotated ann) {
+//            if (ann.getRawType() == Bean3.class) {
+                return new ObjectIdInfo(
+                        PropertyName.construct("@id", null),
+                        null,
+                        JSOGGenerator.class,
+                        null);
+//            }
+//            ObjectIdInfo idInfo = super.findObjectIdInfo(ann);
+
+
+//            return idInfo;
         }
     }
 }
