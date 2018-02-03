@@ -1,8 +1,11 @@
 package ir.atitec.signalgo.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+
 /**
  * Created by whiteman on 7/12/2016.
  */
+@JsonIdentityInfo(generator=JSOGGenerator.class, property="@id")
 public class MessageContract<T> {
 
     public T data;

@@ -21,59 +21,61 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 
 /**
- *
  * @author mehdi akbarian
  */
 public class GoConvertorHelper {
-private static String CHARSET="UTF-8";
+    private static String CHARSET = "UTF-8";
+
     public GoConvertorHelper() {
     }
-    
-    private  ObjectMapper mapper ;
-    public ObjectMapper getObjectMapper(){
-        if(mapper==null){
-            mapper=new ObjectMapper();
+
+    private ObjectMapper mapper;
+
+    public ObjectMapper getObjectMapper() {
+        if (mapper == null) {
+            mapper = new ObjectMapper();
             mapper.configure(MapperFeature.USE_ANNOTATIONS, true);
             mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+
             mapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
             //mapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             mapper.setTimeZone(DateTimeZone.getDefault().toTimeZone());
             SimpleModule module = new SimpleModule();
-            module.addSerializer(DateTime.class,new DateTimeSerializer());
-            module.addDeserializer(DateTime.class,new DateTimeDeserializer());
+            module.addSerializer(DateTime.class, new DateTimeSerializer());
+            module.addDeserializer(DateTime.class, new DateTimeDeserializer());
             mapper.registerModule(module);
         }
         return mapper;
     }
-    
-    public String serialize(Object object) throws JsonProcessingException{
+
+    public String serialize(Object object) throws JsonProcessingException {
         return getObjectMapper().writeValueAsString(object);
     }
-    
-    public <T extends Object> T deserialize(String data,Class<T> s) throws IOException{
+
+    public <T extends Object> T deserialize(String data, Class<T> s) throws IOException {
         return getObjectMapper().readValue(data, s);
     }
-   
-    public <T extends Object> T deserialize(String data,Type type) throws IOException{
-        return getObjectMapper().readValue(data,getObjectMapper().constructType(type));
+
+    public <T extends Object> T deserialize(String data, Type type) throws IOException {
+        return getObjectMapper().readValue(data, getObjectMapper().constructType(type));
     }
-    
-    public byte[] byteConvertor(Object object) throws JsonProcessingException, UnsupportedEncodingException{
-        String raw=serialize(object);
+
+    public byte[] byteConvertor(Object object) throws JsonProcessingException, UnsupportedEncodingException {
+        String raw = serialize(object);
         return raw.getBytes(CHARSET);
     }
-    
-    public boolean configureMapper(MapperFeature feature,boolean activate){
-        if(mapper!=null){
+
+    public boolean configureMapper(MapperFeature feature, boolean activate) {
+        if (mapper != null) {
             mapper.configure(feature, activate);
             return true;
         }
         return false;
     }
 
-    class DateTimeSerializer extends StdSerializer<DateTime>{
-        DateTimeSerializer(){
+    class DateTimeSerializer extends StdSerializer<DateTime> {
+        DateTimeSerializer() {
             this(null);
         }
 
@@ -99,9 +101,28 @@ private static String CHARSET="UTF-8";
 
         @Override
         public DateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-            String s=jsonParser.readValueAs(String.class);
-            DateTime dateTime=new DateTime(s);
+            String s = jsonParser.readValueAs(String.class);
+            DateTime dateTime = new DateTime(s);
             return dateTime;
+        }
+    }
+
+    public final static String REF_KEY = "@ref";
+
+    public static class JSOGRefDeserializer extends JsonDeserializer<JSOGRef>
+    {
+        @Override
+        public JSOGRef deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
+            JsonNode node = p.readValueAsTree();
+            if (node.isTextual()) {
+                return new JSOGRef(node.asInt());
+            }
+            JsonNode n = node.get(REF_KEY);
+            if (n == null) {
+                throw new JsonMappingException(p, "Could not find key '"+REF_KEY
+                        +"' from ("+node.getClass().getName()+"): "+node);
+            }
+            return new JSOGRef(n.asInt());
         }
     }
 }
