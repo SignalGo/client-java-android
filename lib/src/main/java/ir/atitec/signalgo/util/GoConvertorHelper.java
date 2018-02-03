@@ -23,6 +23,7 @@ import org.joda.time.DateTimeZone;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 
 import ir.atitec.signalgo.models.JSOGGenerator;
 
@@ -117,8 +118,7 @@ public class GoConvertorHelper {
 
     public final static String REF_KEY = "@ref";
 
-    public static class JSOGRefDeserializer extends JsonDeserializer<JSOGRef>
-    {
+    public static class JSOGRefDeserializer extends JsonDeserializer<JSOGRef> {
         @Override
         public JSOGRef deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
             JsonNode node = p.readValueAsTree();
@@ -127,22 +127,31 @@ public class GoConvertorHelper {
             }
             JsonNode n = node.get(REF_KEY);
             if (n == null) {
-                throw new JsonMappingException(p, "Could not find key '"+REF_KEY
-                        +"' from ("+node.getClass().getName()+"): "+node);
+                throw new JsonMappingException(p, "Could not find key '" + REF_KEY
+                        + "' from (" + node.getClass().getName() + "): " + node);
             }
             return new JSOGRef(n.asInt());
         }
     }
 
     public static class MyJacksonAnnotationIntrospector extends JacksonAnnotationIntrospector {
+        HashMap<Class, ObjectIdInfo> map = new HashMap<>();
+
         @Override
         public ObjectIdInfo findObjectIdInfo(final Annotated ann) {
+            if (map.containsKey(ann.getRawType())) {
+                return map.get(ann.getRawType());
+            }
+            ObjectIdInfo idInfo = new ObjectIdInfo(
+                    PropertyName.construct("@id", null),
+                    Object.class,
+                    JSOGGenerator.class,
+                    SimpleObjectIdResolver.class);
+            map.put(ann.getRawType(), idInfo);
+
+
 //            if (ann.getRawType() == Bean3.class) {
-                return new ObjectIdInfo(
-                        PropertyName.construct("@id", null),
-                        Object.class,
-                        JSOGGenerator.class,
-                        SimpleObjectIdResolver.class);
+            return idInfo;
 //            }
 //            ObjectIdInfo idInfo = super.findObjectIdInfo(ann);
 //            idInfo.getAlwaysAsId()
