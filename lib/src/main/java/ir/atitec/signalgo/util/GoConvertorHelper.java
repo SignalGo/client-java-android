@@ -35,7 +35,6 @@ public class GoConvertorHelper {
 
     public GoConvertorHelper() {
     }
-
     private ObjectMapper mapper;
 
     public ObjectMapper getObjectMapper() {
@@ -139,6 +138,9 @@ public class GoConvertorHelper {
 
         @Override
         public ObjectIdInfo findObjectIdInfo(final Annotated ann) {
+            if(ann.getRawType().getSimpleName().indexOf("BaseModel") != -1){
+                return null;
+            }
             if (map.containsKey(ann.getRawType())) {
                 return map.get(ann.getRawType());
             }
@@ -158,5 +160,7 @@ public class GoConvertorHelper {
 
 //            return idInfo;
         }
+
+
     }
 }
