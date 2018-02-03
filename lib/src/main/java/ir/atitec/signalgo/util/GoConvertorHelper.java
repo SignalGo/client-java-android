@@ -5,6 +5,7 @@
  */
 package ir.atitec.signalgo.util;
 
+import com.fasterxml.jackson.annotation.SimpleObjectIdResolver;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -139,12 +140,12 @@ public class GoConvertorHelper {
 //            if (ann.getRawType() == Bean3.class) {
                 return new ObjectIdInfo(
                         PropertyName.construct("@id", null),
-                        null,
+                        Object.class,
                         JSOGGenerator.class,
-                        null);
+                        SimpleObjectIdResolver.class);
 //            }
 //            ObjectIdInfo idInfo = super.findObjectIdInfo(ann);
-
+//            idInfo.getAlwaysAsId()
 
 //            return idInfo;
         }
