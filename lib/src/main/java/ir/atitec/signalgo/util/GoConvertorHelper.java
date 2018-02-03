@@ -51,7 +51,7 @@ public class GoConvertorHelper {
             module.addSerializer(DateTime.class, new DateTimeSerializer());
             module.addDeserializer(DateTime.class, new DateTimeDeserializer());
             mapper.registerModule(module);
-            mapper.setAnnotationIntrospector(new MyJacksonAnnotationIntrospector());
+//            mapper.setAnnotationIntrospector(new MyJacksonAnnotationIntrospector());
 
         }
         return mapper;
@@ -133,34 +133,32 @@ public class GoConvertorHelper {
         }
     }
 
-    public static class MyJacksonAnnotationIntrospector extends JacksonAnnotationIntrospector {
-        HashMap<Class, ObjectIdInfo> map = new HashMap<>();
-
-        @Override
-        public ObjectIdInfo findObjectIdInfo(final Annotated ann) {
-            if(ann.getRawType().getSimpleName().indexOf("ModelAdapter") != -1){
-                return null;
-            }
-            if (map.containsKey(ann.getRawType())) {
-                return map.get(ann.getRawType());
-            }
-            ObjectIdInfo idInfo = new ObjectIdInfo(
-                    PropertyName.construct("@id", null),
-                    Object.class,
-                    JSOGGenerator.class,
-                    SimpleObjectIdResolver.class);
-            map.put(ann.getRawType(), idInfo);
-
-
-//            if (ann.getRawType() == Bean3.class) {
-            return idInfo;
+//    public static class MyJacksonAnnotationIntrospector extends JacksonAnnotationIntrospector {
+//        HashMap<Class, ObjectIdInfo> map = new HashMap<>();
+//
+//        @Override
+//        public ObjectIdInfo findObjectIdInfo(final Annotated ann) {
+//            if(ann.getRawType().getSimpleName().indexOf("ModelAdapter") != -1){
+//                return null;
 //            }
-//            ObjectIdInfo idInfo = super.findObjectIdInfo(ann);
-//            idInfo.getAlwaysAsId()
-
+//            if (map.containsKey(ann.getRawType())) {
+//                return map.get(ann.getRawType());
+//            }
+//            ObjectIdInfo idInfo = new ObjectIdInfo(
+//                    PropertyName.construct("@id", null),
+//                    Object.class,
+//                    JSOGGenerator.class,
+//                    SimpleObjectIdResolver.class);
+//            map.put(ann.getRawType(), idInfo);
+//
+//
+////            if (ann.getRawType() == Bean3.class) {
 //            return idInfo;
-        }
-
-
-    }
+////            }
+////            ObjectIdInfo idInfo = super.findObjectIdInfo(ann);
+////            idInfo.getAlwaysAsId()
+//
+////            return idInfo;
+//        }
+//    }
 }

@@ -53,7 +53,7 @@ public class Connector {
     private GoStreamReader goStreamReader;
     private GoStreamWriter goStreamWriter;
     public GoClientHelper clientHelper;
-    private GoConvertorHelper convertorHelper;
+    private static GoConvertorHelper convertorHelper = new GoConvertorHelper();
     private GoSocketListener socketListener;
     private GoSocketListener.SocketState currentState;
     private GoSocketListener.SocketState lastState;
@@ -80,7 +80,7 @@ public class Connector {
         System.out.println("signalGo   new connector instant create");
         this.currentState = GoSocketListener.SocketState.Disconnected;
         this.lastState = GoSocketListener.SocketState.Disconnected;
-        convertorHelper = new GoConvertorHelper();
+//        convertorHelper = new GoConvertorHelper();
         goStreamReader = new GoStreamReader();
         goStreamWriter = new GoStreamWriter();
         clientHelper = new GoClientHelper();
@@ -593,4 +593,7 @@ public class Connector {
         return socket.isConnected();
     }
 
+    public static GoConvertorHelper getConvertorHelper() {
+        return convertorHelper;
+    }
 }
