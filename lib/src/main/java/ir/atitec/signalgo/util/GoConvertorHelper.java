@@ -138,7 +138,7 @@ public class GoConvertorHelper {
 
         @Override
         public ObjectIdInfo findObjectIdInfo(final Annotated ann) {
-            if(ann.getRawType().getSimpleName().indexOf("BaseModel") != -1){
+            if(ann.getRawType().getSimpleName().indexOf("ModelAdapter") != -1){
                 return null;
             }
             if (map.containsKey(ann.getRawType())) {
