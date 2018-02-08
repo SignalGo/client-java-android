@@ -47,7 +47,9 @@ public  class JSOGGenerator extends ObjectIdGenerator<JSOGRef>  {
 
     // important: otherwise won't get proper handling
     @Override
-    public boolean maySerializeAsObject() { return true; }
+    public boolean maySerializeAsObject() {
+        return false;
+    }
 
     // ditto: needed for handling Object-valued Object references
     @Override

@@ -2,10 +2,12 @@ package ir.atitec.signalgoApp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.reflect.TypeToken;
 
@@ -30,6 +32,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GoConvertorHelper goConvertorHelper = new GoConvertorHelper();
+        try {
+            String json = goConvertorHelper.serialize(new MyClass());
+            Log.e("log",json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
 //        SignalGoCore.instance()
 //                .registerEmitDuplex(new TestService())
