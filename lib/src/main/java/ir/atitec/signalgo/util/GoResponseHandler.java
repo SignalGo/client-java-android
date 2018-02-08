@@ -54,14 +54,19 @@ public abstract class GoResponseHandler<T> {
 //        });
 //    }
 
-    public void onServerResponse(Object response) {
-        if (getCore().getMonitorableMessage() == null)
-            onSuccess((T) response);
-        else if (response instanceof Response) {
-            getCore().getMonitorableMessage().onServerResponse((Response) response, this);
-        } else {
-            getCore().getMonitorableMessage().onServerResultWithoutResponse(response, this);
-        }
+    public void onServerResponse(final Object response) {
+        Needle.onMainThread().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (getCore().getMonitorableMessage() == null)
+                    onSuccess((T) response);
+                else if (response instanceof Response) {
+                    getCore().getMonitorableMessage().onServerResponse((Response) response, GoResponseHandler.this);
+                } else {
+                    getCore().getMonitorableMessage().onServerResultWithoutResponse(response, GoResponseHandler.this);
+                }
+            }
+        });
     }
 
     public void setGoMethodName(GoMethodName goMethodName) {
