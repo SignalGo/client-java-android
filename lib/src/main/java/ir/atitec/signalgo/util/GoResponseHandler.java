@@ -82,19 +82,21 @@ public abstract class GoResponseHandler<T> {
 //    }
 
     public Type getType() {
-        if (typeToken != null)
+        if (typeToken != null) {
+            if (getCore() != null && getCore().getResponseClass() != null)
+                return typeToken.getSubtype(getCore().getResponseClass()).getType();
             return typeToken.getType();
-        else {
+        } else {
             return typeToken2.getType();
         }
     }
 
     public void setTypeToken(TypeToken<Response<T>> typeToken) {
-        if (getCore().getResponseClass() != null) {
-            this.typeToken = (TypeToken<Response<T>>) typeToken.getSubtype(getCore().getResponseClass());
-        } else {
-            this.typeToken = typeToken;
-        }
+//        if (getCore().getResponseClass() != null) {
+//            this.typeToken = (TypeToken<Response<T>>) typeToken.getSubtype(getCore().getResponseClass());
+//        } else {
+        this.typeToken = typeToken;
+//        }
     }
 
     public void setTypeToken2(TypeToken<T> typeToken2) {
