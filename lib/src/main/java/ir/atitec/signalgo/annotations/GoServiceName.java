@@ -18,13 +18,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface GoServiceName {
 
-    public enum GoClientType {
-        Android(0), Java(1);
-        private int id;
-        private GoClientType(int id) {
-            this.id = id;
-        }
-    }
+//    public enum GoClientType {
+//        Android(0), Java(1);
+//        private int id;
+//        private GoClientType(int id) {
+//            this.id = id;
+//        }
+//    }
     
     public enum GoUsageType {
         invoke(0), emit(1), both(2);
@@ -37,7 +37,7 @@ public @interface GoServiceName {
 
     String name() default "";
     
-    GoClientType type() default GoClientType.Android;
+//    GoClientType type() default GoClientType.Android;
     
     GoUsageType usage() default GoUsageType.both;
 }

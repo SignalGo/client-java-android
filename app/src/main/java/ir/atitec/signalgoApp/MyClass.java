@@ -1,24 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ir.atitec.signalgoApp;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import org.joda.time.DateTime;
-
 /**
- *
- * @author white
+ * Created by hamed on 2/7/2018.
  */
-public class MyClass {
 
-    public String name;
-    public DateTime dateTime;
-    public ArrayList<Byte> bytes;
-    public LinkedHashMap<String ,MyClass> hashMap;
-    public byte[] bs;
-    
+public class MyClass {
+    public int userId;
+    public int id;
+    public String title;
+    public String body;
 }

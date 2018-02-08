@@ -2,8 +2,6 @@ package ir.atitec.signalgo.models;
 
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 
-import ir.atitec.signalgo.util.JSOGRef;
-
 /**
  * Created by hamed on 2/1/2018.
  */

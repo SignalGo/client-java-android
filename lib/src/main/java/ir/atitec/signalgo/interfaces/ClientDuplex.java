@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ir.atitec.signalgo.util;
+package ir.atitec.signalgo.interfaces;
 
 import ir.atitec.signalgo.Connector;
 
@@ -13,5 +13,5 @@ import ir.atitec.signalgo.Connector;
  */
 public interface ClientDuplex {
    
-    void getConnector(Connector c);
+//    void getConnector(Connector c);
 }

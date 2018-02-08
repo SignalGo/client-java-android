@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface GoMethodName {
     public enum MethodType {
-        invoke(0), emit(1);
+        invoke(0), emit(1),httpGet(2),httpPost(3),httpUploadFile(4);
 
         private int id;
 
@@ -52,5 +52,7 @@ public @interface GoMethodName {
 
     PriorityType priority() default PriorityType.low;
 
-    boolean printErrors() default true;
+    boolean doMonitor() default true;
+
+    String[] multipartKeys() default {};
 }
