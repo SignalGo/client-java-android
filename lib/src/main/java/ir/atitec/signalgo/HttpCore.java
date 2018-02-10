@@ -208,6 +208,7 @@ public class HttpCore extends Core {
 
     @Override
     public void init() {
+        super.init();
         restTemplate = new RestTemplate();
         MappingJackson2HttpMessageConverter m = new MappingJackson2HttpMessageConverter();
         m.setObjectMapper(getObjectMapper());

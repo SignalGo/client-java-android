@@ -1,12 +1,16 @@
 package ir.atitec.signalgo;
 
+import android.util.Pair;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import ir.atitec.signalgo.interfaces.MonitorableMessage;
 import ir.atitec.signalgo.models.Response;
@@ -45,8 +49,7 @@ public abstract class Core {
     private MonitorableMessage monitorableMessage;
 
     protected Core() {
-        goConvertorHelper = new GoConvertorHelper();
-        objectMapper = goConvertorHelper.getObjectMapper();
+
     }
 
 
@@ -78,13 +81,11 @@ public abstract class Core {
 
     public Core addSerializer(Class cls, StdSerializer serializer) {
         module.addSerializer(cls, serializer);
-        objectMapper.registerModule(module);
         return this;
     }
 
     public Core addDeserializer(Class cls, StdDeserializer deserializer) {
         module.addDeserializer(cls, deserializer);
-        objectMapper.registerModule(module);
         return this;
     }
 
@@ -103,8 +104,13 @@ public abstract class Core {
     }
 
 
-    public abstract void init();
-    public abstract void callMethod(GoResponseHandler responseHandler,Object...params);
+    public void init() {
+        goConvertorHelper = new GoConvertorHelper();
+        objectMapper = goConvertorHelper.getObjectMapper();
+        objectMapper = objectMapper.registerModule(module);
+    }
+
+    public abstract void callMethod(GoResponseHandler responseHandler, Object... params);
 
 
 }

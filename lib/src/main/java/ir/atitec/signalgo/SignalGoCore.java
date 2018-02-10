@@ -271,10 +271,9 @@ public class SignalGoCore extends Core implements NetworkObserver, SessionRespon
     }
 
 
-
     @Override
     public void init() {
-
+        super.init();
     }
 
     @Override
