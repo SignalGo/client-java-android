@@ -5,6 +5,7 @@
  */
 package ir.atitec.signalgo.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,7 +43,7 @@ public class GoConvertorHelper {
             //mapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             mapper.setTimeZone(DateTimeZone.getDefault().toTimeZone());
-
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 //            mapper.setAnnotationIntrospector(new MyJacksonAnnotationIntrospector());
 
         }

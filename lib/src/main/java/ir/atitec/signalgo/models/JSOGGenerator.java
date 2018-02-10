@@ -7,7 +7,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerator;
  */
 
 public  class JSOGGenerator extends ObjectIdGenerator<JSOGRef>  {
-    public static final String REF_KEY = "@ref";
+    public static final String REF_KEY = "$ref";
+    public static final String ID_KEY = "$id";
 
     private static final long serialVersionUID = 1L;
     protected transient int _nextValue;

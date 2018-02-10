@@ -145,10 +145,9 @@ public class SignalGoSerializer {
 
         @Override
         public void serialize(JSOGRef value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            gen.writeNumber(-1);
+            gen.writeObject(null);
         }
     }
-
 
 
 }
