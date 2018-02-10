@@ -76,6 +76,7 @@ public class Connector {
 
     public Connector(GoConvertorHelper goConvertorHelper) {
         System.out.println("signalGo   new connector instant create");
+        this.convertorHelper = goConvertorHelper;
         this.currentState = GoSocketListener.SocketState.Disconnected;
         this.lastState = GoSocketListener.SocketState.Disconnected;
 //        convertorHelper = new GoConvertorHelper();
@@ -83,7 +84,7 @@ public class Connector {
         goStreamWriter = new GoStreamWriter(getConvertorHelper());
         clientHelper = new GoClientHelper(getConvertorHelper());
         autoPingPong();
-        this.convertorHelper = goConvertorHelper;
+
         queueMethodses = new PriorityBlockingQueue<>(20, comparator);
     }
 
