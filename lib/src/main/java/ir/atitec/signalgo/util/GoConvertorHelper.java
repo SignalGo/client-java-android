@@ -33,21 +33,21 @@ public class GoConvertorHelper {
     }
     private ObjectMapper mapper;
 
-    public ObjectMapper getObjectMapper() {
-        if (mapper == null) {
-            mapper = new ObjectMapper();
-            mapper.configure(MapperFeature.USE_ANNOTATIONS, true);
-            mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    public synchronized ObjectMapper getObjectMapper() {
+            if (mapper == null) {
+                mapper = new ObjectMapper();
+                mapper.configure(MapperFeature.USE_ANNOTATIONS, true);
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 
-            mapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
-            //mapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            mapper.setTimeZone(DateTimeZone.getDefault().toTimeZone());
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                mapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
+                //mapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
+                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                mapper.setTimeZone(DateTimeZone.getDefault().toTimeZone());
+                mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 //            mapper.setAnnotationIntrospector(new MyJacksonAnnotationIntrospector());
 
-        }
-        return mapper;
+            }
+            return mapper;
     }
 
     public String serialize(Object object) throws JsonProcessingException {

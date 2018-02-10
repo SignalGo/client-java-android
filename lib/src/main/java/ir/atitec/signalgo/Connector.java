@@ -80,8 +80,8 @@ public class Connector {
         this.lastState = GoSocketListener.SocketState.Disconnected;
 //        convertorHelper = new GoConvertorHelper();
         goStreamReader = new GoStreamReader();
-        goStreamWriter = new GoStreamWriter();
-        clientHelper = new GoClientHelper();
+        goStreamWriter = new GoStreamWriter(getConvertorHelper());
+        clientHelper = new GoClientHelper(getConvertorHelper());
         autoPingPong();
         this.convertorHelper = goConvertorHelper;
         queueMethodses = new PriorityBlockingQueue<>(20, comparator);
@@ -584,4 +584,7 @@ public class Connector {
         return socket.isConnected();
     }
 
+    public GoConvertorHelper getConvertorHelper() {
+        return convertorHelper;
+    }
 }
