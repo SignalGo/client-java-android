@@ -241,16 +241,22 @@ public class HttpCore extends Core {
         }
         int i = 0;
         String url = methodName.name();
+        int index = 0, index2 = 0;
         do {
-            int index = 0, index2 = 0;
-            index = url.indexOf("{", index + 1);
+            index = url.indexOf("{", index + 2);
             index2 = url.indexOf("}", index2 + 1);
             if (index == -1 || index2 == -1) {
                 break;
             }
 
             try {
-                url = url.replace("{" + url.substring(index+1, index2) + "}", getObjectMapper().writeValueAsString(params[i]) + "");
+                String str = getObjectMapper().writeValueAsString(params[i]);
+                url = url.replace("{" + url.substring(index + 1, index2) + "}", str + "");
+                int x = 0;
+                if ((x = str.indexOf("}")) != -1) {
+                    index += x;
+                    index2 += x;
+                }
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -269,7 +275,7 @@ public class HttpCore extends Core {
         if (methodName.type().getId() == GoMethodName.MethodType.httpGet.getId()) {
             get(url, responseHandler);
         } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost.getId()) {
-            if (pa.length <=1)
+            if (pa.length <= 1)
                 post(url, responseHandler, pa);
             else
                 postMultipart(url, methodName.multipartKeys(), responseHandler, pa);
