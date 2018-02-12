@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -247,7 +248,12 @@ public class HttpCore extends Core {
             if (index == -1 || index2 == -1) {
                 break;
             }
-            url = url.replace("{" + url.substring(index+1, index2) + "}", params[i] + "");
+
+            try {
+                url = url.replace("{" + url.substring(index+1, index2) + "}", getObjectMapper().writeValueAsString(params[i]) + "");
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
             i++;
         } while (true);
 
