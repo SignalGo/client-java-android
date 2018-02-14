@@ -173,27 +173,35 @@ public class HttpCore extends Core {
             }
             HttpEntity httpEntity = null;
             if (objects != null && objects.length > 0) {
-                if (objects.length == 1) {
-                    if (objects[0] instanceof File) {
-                        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
-                        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-                        FileSystemResource value = new FileSystemResource((File) objects[0]);
-                        map.add("file", value);
-                        httpEntity = new HttpEntity(map, httpHeaders);
-                    } else {
-                        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                        httpEntity = new HttpEntity(objects[0], httpHeaders);
-                    }
-                } else if (keys != null && keys.length == objects.length) {
+                if (objects.length == 1 && objects[0] instanceof File) {
                     httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
                     LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-                    for (int i = 0; i < objects.length; i++) {
+                    FileSystemResource value = new FileSystemResource((File) objects[0]);
+                    map.add("file", value);
+                    httpEntity = new HttpEntity(map, httpHeaders);
+
+                } else if (keys != null && keys.length > 0) {
+                    httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+                    LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+                    for (int i = 0; i < keys.length; i++) {
                         map.add(keys[i], objects[i]);
                     }
                     httpEntity = new HttpEntity(map, httpHeaders);
                 } else {
-                    httpEntity = new HttpEntity(httpHeaders);
+                    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                    httpEntity = new HttpEntity(objects[0], httpHeaders);
                 }
+
+//                else if (keys != null && keys.length == objects.length) {
+//                    httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+//                    LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+//                    for (int i = 0; i < objects.length; i++) {
+//                        map.add(keys[i], objects[i]);
+//                    }
+//                    httpEntity = new HttpEntity(map, httpHeaders);
+//                } else {
+//                    httpEntity = new HttpEntity(httpHeaders);
+//                }
             } else {
                 httpEntity = new HttpEntity(httpHeaders);
             }
