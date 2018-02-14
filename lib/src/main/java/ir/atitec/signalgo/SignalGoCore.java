@@ -89,6 +89,7 @@ public class SignalGoCore extends Core implements NetworkObserver, SessionRespon
             lState = null;
             connector = null;
             destroyMe(this.getClass());
+            notifyConnectionObservers();
 //            core = null;
         } catch (Exception e) {
             e.printStackTrace();
