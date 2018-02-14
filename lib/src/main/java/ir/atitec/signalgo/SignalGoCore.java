@@ -88,7 +88,7 @@ public class SignalGoCore extends Core implements NetworkObserver, SessionRespon
             cState = null;
             lState = null;
             connector = null;
-            destroyMe(this.getClass());
+//            destroyMe(this.getClass());
             notifyConnectionObservers();
 //            core = null;
         } catch (Exception e) {
@@ -97,31 +97,33 @@ public class SignalGoCore extends Core implements NetworkObserver, SessionRespon
     }
 
     private GoSocketListener socketChangeListener() {
-        goSocketListener = new GoSocketListener() {
-            @Override
-            public void onSocketChange(SocketState socketState, SocketState socketState1) {
-                lState = socketState;
-                cState = socketState1;
-                if (cState == SocketState.Connected) {
-                    Log.e(TAG, "onConnected!");
-                    if (sessionManager != null) {
-                        sessionManager.getSession(SignalGoCore.this);
-                    } else {
+        if (goSocketListener == null) {
+            goSocketListener = new GoSocketListener() {
+                @Override
+                public void onSocketChange(SocketState socketState, SocketState socketState1) {
+                    lState = socketState;
+                    cState = socketState1;
+                    if (cState == SocketState.Connected) {
+                        Log.e(TAG, "onConnected!");
+                        if (sessionManager != null) {
+                            sessionManager.getSession(SignalGoCore.this);
+                        } else {
+                            notifyConnectionObservers();
+                        }
+                    } else if (cState == SocketState.Disconnected) {
+                        Log.e(TAG, "onDisconnected");
+                        trySchcduler();
+                        hasSession = false;
                         notifyConnectionObservers();
                     }
-                } else if (cState == SocketState.Disconnected) {
-                    Log.e(TAG, "onDisconnected");
-                    trySchcduler();
-                    hasSession = false;
-                    notifyConnectionObservers();
                 }
-            }
 
-            @Override
-            public void socketExeption(Exception e) {
-                e.printStackTrace();
-            }
-        };
+                @Override
+                public void socketExeption(Exception e) {
+                    e.printStackTrace();
+                }
+            };
+        }
         return goSocketListener;
     }
 
