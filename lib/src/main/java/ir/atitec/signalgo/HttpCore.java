@@ -184,7 +184,8 @@ public class HttpCore extends Core {
                     httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
                     LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
                     for (int i = 0; i < keys.length; i++) {
-                        map.add(keys[i], objects[i]);
+                        if (objects[i] != null)
+                            map.add(keys[i], objects[i]);
                     }
                     httpEntity = new HttpEntity(map, httpHeaders);
                 } else {
