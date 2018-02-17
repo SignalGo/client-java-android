@@ -288,8 +288,9 @@ public class SignalGoCore extends Core implements NetworkObserver, SessionRespon
                 throw new RuntimeException("method type is wrong");
             }
             responseHandler.setGoMethodName(methodName);
-            connector.autoInvokeAsync(methodName, responseHandler, params);
-        } catch (ClassNotFoundException e) {
+            if (connector != null)
+                connector.autoInvokeAsync(methodName, responseHandler, params);
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("can't find GoMethodName Annotaion on your method");
         }
