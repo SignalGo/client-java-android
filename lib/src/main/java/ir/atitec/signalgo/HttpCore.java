@@ -225,10 +225,13 @@ public class HttpCore extends Core {
         restTemplate = new RestTemplate();
         MappingJackson2HttpMessageConverter m = new MappingJackson2HttpMessageConverter();
         m.setObjectMapper(getObjectMapper());
-        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        FormHttpMessageConverter form = new FormHttpMessageConverter();
+        form.addPartConverter(m);
+        restTemplate.getMessageConverters().add(form);
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
         restTemplate.getMessageConverters().add(m);
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+
         restTemplate.setErrorHandler(new ResponseErrorHandler() {
             @Override
             public boolean hasError(ClientHttpResponse response) throws IOException {
