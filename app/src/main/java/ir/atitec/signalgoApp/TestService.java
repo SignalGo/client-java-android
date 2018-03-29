@@ -43,9 +43,9 @@ public class TestService implements ClientDuplex {
     }
 
     @GoMethodName(name = "/posts/{index}", type = GoMethodName.MethodType.httpGet)
-    public static void getPost(int index, GoResponseHandler<MyClass> goResponseHandler) {
+    public static void getPost(MyClass index, GoResponseHandler<MyClass> goResponseHandler) {
         goResponseHandler.setTypeToken2(new TypeToken<MyClass>() {});
-        HttpCore.instance().callMethod(goResponseHandler, index);
+        HttpCore.instance().callMethod(goResponseHandler, 2);
     }
 
     @GoMethodName(name = "/comments?postId={postId}", type = GoMethodName.MethodType.httpGet)

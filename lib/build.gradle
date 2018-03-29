@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -22,16 +22,16 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
-    compile 'com.google.guava:guava:19.0'
+    implementation group: 'joda-time', name: 'joda-time', version: '2.9.9'
+    implementation 'com.google.guava:guava:19.0'
 //    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk7', version: '2.6.7'
-    compile 'com.zsoltsafrany:needle:1.0.0'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.4'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.4'
-    compile group: 'org.springframework.android', name: 'spring-android-rest-template', version: '1.0.1.RELEASE'
+    implementation 'com.zsoltsafrany:needle:1.0.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.4'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.4'
+    implementation group: 'org.springframework.android', name: 'spring-android-rest-template', version: '1.0.1.RELEASE'
 
 }
 
