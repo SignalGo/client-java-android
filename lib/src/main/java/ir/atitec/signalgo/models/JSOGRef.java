@@ -1,15 +1,18 @@
-package ir.atitec.signalgo.util;
+package ir.atitec.signalgo.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import ir.atitec.signalgo.models.JSOGGenerator;
+import ir.atitec.signalgo.util.GoConvertorHelper;
+import ir.atitec.signalgo.util.SignalGoSerializer;
 
 /**
  * Created by hamed on 2/1/2018.
  */
 
-@JsonDeserialize(using=GoConvertorHelper.JSOGRefDeserializer.class)
+@JsonDeserialize(using=SignalGoSerializer.JSOGRefDeserializer.class)
+@JsonSerialize(using = SignalGoSerializer.JSOGRefSerializer.class)
 public class JSOGRef
 {
     @JsonProperty(JSOGGenerator.REF_KEY)

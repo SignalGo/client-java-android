@@ -43,6 +43,22 @@ public class GoBackStackHelper {
     }
 
 
+    public static GoMethodName getHttpMethodName() throws ClassNotFoundException {
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        for (StackTraceElement ste : elements) {
+            Class c = Class.forName(ste.getClassName());
+//            if (c.getAnnotation(GoServiceName.class) != null) {
+            Method[] methods = c.getMethods();
+            for (Method m : methods) {
+                if (m.getAnnotation(GoMethodName.class) != null && m.getName().equals(ste.getMethodName()))
+                    return m.getAnnotation(GoMethodName.class);
+            }
+            //}
+        }
+        return null;
+    }
+
+
 //    public static int getPriority() throws ClassNotFoundException {
 //        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
 //        for (StackTraceElement ste : elements) {

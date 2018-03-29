@@ -2,14 +2,13 @@ package ir.atitec.signalgo.models;
 
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 
-import ir.atitec.signalgo.util.JSOGRef;
-
 /**
  * Created by hamed on 2/1/2018.
  */
 
 public  class JSOGGenerator extends ObjectIdGenerator<JSOGRef>  {
-    public static final String REF_KEY = "@ref";
+    public static final String REF_KEY = "$ref";
+    public static final String ID_KEY = "$id";
 
     private static final long serialVersionUID = 1L;
     protected transient int _nextValue;
@@ -49,7 +48,9 @@ public  class JSOGGenerator extends ObjectIdGenerator<JSOGRef>  {
 
     // important: otherwise won't get proper handling
     @Override
-    public boolean maySerializeAsObject() { return true; }
+    public boolean maySerializeAsObject() {
+        return false;
+    }
 
     // ditto: needed for handling Object-valued Object references
     @Override

@@ -3,11 +3,11 @@ package ir.atitec.signalgo;
 import ir.atitec.signalgo.annotations.GoMethodName;
 import ir.atitec.signalgo.annotations.GoServiceName;
 import ir.atitec.signalgo.models.GoKeyValue;
-import ir.atitec.signalgo.models.MessageContract;
+import ir.atitec.signalgo.models.Response;
 import ir.atitec.signalgo.models.MethodCallInfo;
 import ir.atitec.signalgo.models.MethodCallbackInfo;
 import ir.atitec.signalgo.models.QueueMethods;
-import ir.atitec.signalgo.util.ClientDuplex;
+import ir.atitec.signalgo.interfaces.ClientDuplex;
 import ir.atitec.signalgo.util.GoAsyncHelper;
 import ir.atitec.signalgo.util.GoAutoResetEvent;
 import ir.atitec.signalgo.util.GoCallbackHandler;
@@ -20,7 +20,6 @@ import ir.atitec.signalgo.util.GoResponseHandler;
 import ir.atitec.signalgo.util.GoSocketListener;
 import ir.atitec.signalgo.util.GoStreamReader;
 import ir.atitec.signalgo.util.GoStreamWriter;
-import ir.atitec.signalgo.models.MonitorableErrorMessage;
 import needle.Needle;
 
 import java.io.*;
@@ -53,7 +52,7 @@ public class Connector {
     private GoStreamReader goStreamReader;
     private GoStreamWriter goStreamWriter;
     public GoClientHelper clientHelper;
-    private static GoConvertorHelper convertorHelper = new GoConvertorHelper();
+    private GoConvertorHelper convertorHelper;
     private GoSocketListener socketListener;
     private GoSocketListener.SocketState currentState;
     private GoSocketListener.SocketState lastState;
@@ -62,7 +61,6 @@ public class Connector {
     private TimerTask timerTask;
     Runnable listener;
     private PriorityBlockingQueue<QueueMethods> queueMethodses;
-    MonitorableErrorMessage monitorableErrorMessage;
 
     Comparator<QueueMethods> comparator = new Comparator<QueueMethods>() {
         @Override
@@ -76,15 +74,17 @@ public class Connector {
         }
     };
 
-    public Connector() {
+    public Connector(GoConvertorHelper goConvertorHelper) {
         System.out.println("signalGo   new connector instant create");
+        this.convertorHelper = goConvertorHelper;
         this.currentState = GoSocketListener.SocketState.Disconnected;
         this.lastState = GoSocketListener.SocketState.Disconnected;
 //        convertorHelper = new GoConvertorHelper();
         goStreamReader = new GoStreamReader();
-        goStreamWriter = new GoStreamWriter();
-        clientHelper = new GoClientHelper();
+        goStreamWriter = new GoStreamWriter(getConvertorHelper());
+        clientHelper = new GoClientHelper(getConvertorHelper());
         autoPingPong();
+
         queueMethodses = new PriorityBlockingQueue<>(20, comparator);
     }
 
@@ -274,7 +274,7 @@ public class Connector {
         try {
             Object o = invoke("/RegisterService", name, Object.class);
             if (mPendingServices != null && mPendingServices.containsKey(name)) {
-                ((ClientDuplex) this.mPendingServices.get(name)).getConnector(this);
+//                ((ClientDuplex) this.mPendingServices.get(name)).getConnector(this);
                 mPendingServices.remove(name);
             }
         } catch (Exception ex) {
@@ -368,11 +368,10 @@ public class Connector {
 //    }
 //
 
-    public void autoInvokeAsync(final GoResponseHandler goResponseHandler, final Object... param) {
+    public void autoInvokeAsync(GoMethodName methodName,final GoResponseHandler goResponseHandler, final Object... param) {
         try {
             final String serviceName = GoBackStackHelper.getServiceName();
-            final GoMethodName methodName = GoBackStackHelper.getMethodName();
-            goResponseHandler.setConnector(this);
+//            final GoMethodName methodName = GoBackStackHelper.getMethodName();
             goResponseHandler.setGoMethodName(methodName);
             if (onRecievedExeption || !socket.isConnected()) {
                 goResponseHandler.onAbort();
@@ -438,11 +437,11 @@ public class Connector {
                                 System.out.println(queueMethods.methodName + " " + o.toString());
                             else
                                 System.out.println(queueMethods.methodName + " null Response");
-                            queueMethods.goResponseHandler.postResponse((MessageContract) o);
+                            queueMethods.goResponseHandler.onServerResponse((Response) o);
                         }
 
                     } catch (Exception ex) {
-                        queueMethods.goResponseHandler.postResponse(null);
+                        queueMethods.goResponseHandler.onServerResponse(null);
                         exceptionHandler(ex);
                     }
                 }
@@ -463,13 +462,6 @@ public class Connector {
         }
     }
 
-    public MonitorableErrorMessage getMonitorableErrorMessage() {
-        return monitorableErrorMessage;
-    }
-
-    public void setMonitorableErrorMessage(MonitorableErrorMessage monitorableErrorMessage) {
-        this.monitorableErrorMessage = monitorableErrorMessage;
-    }
 
     public void onSocketChangeListener(GoSocketListener listener) {
         this.socketListener = listener;
@@ -593,7 +585,7 @@ public class Connector {
         return socket.isConnected();
     }
 
-    public static GoConvertorHelper getConvertorHelper() {
+    public GoConvertorHelper getConvertorHelper() {
         return convertorHelper;
     }
 }

@@ -27,8 +27,8 @@ public class GoStreamWriter {
     
     private GoConvertorHelper convertorHelper;
 
-    public GoStreamWriter() {
-        convertorHelper=new GoConvertorHelper();
+    public GoStreamWriter(GoConvertorHelper goConvertorHelper) {
+        convertorHelper=goConvertorHelper;
     }
 
     public void send(final OutputStream outputStream,MethodCallInfo callInfo) throws JsonProcessingException, UnsupportedEncodingException, IOException{

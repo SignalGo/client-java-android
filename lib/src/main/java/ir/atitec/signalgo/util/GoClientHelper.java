@@ -26,8 +26,8 @@ public class GoClientHelper {
     private GoConvertorHelper convertorHelper;
     private boolean isDisposed = false;
 
-    public GoClientHelper() {
-        convertorHelper = new GoConvertorHelper();
+    public GoClientHelper(GoConvertorHelper goConvertorHelper) {
+        this.convertorHelper = goConvertorHelper;
     }
 
     public List<ParameterInfo> getListOfParam(Object... param) {

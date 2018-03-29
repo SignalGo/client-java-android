@@ -29,7 +29,7 @@ public class GoCallbackHandler {
     public GoCallbackHandler(Connector connector) {
         this.connector = connector;
         callBackClasses = new LinkedHashMap<String, List<Object>>();
-        convertorHelper = new GoConvertorHelper();
+        convertorHelper = connector.getConvertorHelper();
     }
 
     public boolean registerCallback(Object observer) {
