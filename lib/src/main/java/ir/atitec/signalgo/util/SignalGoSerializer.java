@@ -18,6 +18,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
 
+import ir.atitec.signalgo.models.JSOGGenerator;
 import ir.atitec.signalgo.models.JSOGRef;
 
 /**
@@ -110,7 +111,6 @@ public class SignalGoSerializer {
         }
     }
 
-    public final static String REF_KEY = "@ref";
 
     public static class JSOGRefDeserializer extends JsonDeserializer<JSOGRef> {
         @Override
@@ -119,9 +119,9 @@ public class SignalGoSerializer {
             if (node.isTextual()) {
                 return new JSOGRef(node.asInt());
             }
-            JsonNode n = node.get(REF_KEY);
+            JsonNode n = node.get(JSOGGenerator.REF_KEY);
             if (n == null) {
-                throw new JsonMappingException(p, "Could not find key '" + REF_KEY
+                throw new JsonMappingException(p, "Could not find key '" + JSOGGenerator.REF_KEY
                         + "' from (" + node.getClass().getName() + "): " + node);
             }
             return new JSOGRef(n.asInt());
