@@ -120,8 +120,10 @@ public class SignalGoSerializer {
                 return new JSOGRef(node.asInt());
             }
             JsonNode n = node.get(JSOGGenerator.REF_KEY);
+            boolean x = n == null;
+            System.out.print(x);
             if (n == null) {
-                
+
                 throw new JsonMappingException(p, "Could not find key '" + JSOGGenerator.REF_KEY
                         + "' from (" + node.getClass().getName() + "): " + node);
             }
