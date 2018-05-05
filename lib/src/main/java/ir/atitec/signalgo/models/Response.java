@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 /**
  * Created by whiteman on 7/12/2016.
  */
-@JsonIdentityInfo(generator = JSOGGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = JSOGGenerator.class, property = JSOGGenerator.ID_KEY)
 public class Response<T> {
 
 //    public T data;
