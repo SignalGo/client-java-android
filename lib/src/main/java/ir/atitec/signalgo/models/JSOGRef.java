@@ -11,7 +11,7 @@ import ir.atitec.signalgo.util.SignalGoSerializer;
  * Created by hamed on 2/1/2018.
  */
 
-@JsonDeserialize(using=SignalGoSerializer.JSOGRefDeserializer.class)
+//@JsonDeserialize(using=SignalGoSerializer.JSOGRefDeserializer.class)
 @JsonSerialize(using = SignalGoSerializer.JSOGRefSerializer.class)
 public class JSOGRef
 {

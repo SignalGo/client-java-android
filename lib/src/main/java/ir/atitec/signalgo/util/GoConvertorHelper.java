@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -40,10 +42,11 @@ public class GoConvertorHelper {
                 mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
 
                 mapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
-                //mapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
+                mapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 mapper.setTimeZone(DateTimeZone.getDefault().toTimeZone());
                 mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
 //            mapper.setAnnotationIntrospector(new MyJacksonAnnotationIntrospector());
 
             }
@@ -55,11 +58,17 @@ public class GoConvertorHelper {
     }
 
     public <T extends Object> T deserialize(String data, Class<T> s) throws IOException {
-        return getObjectMapper().readValue(data, s);
+        RefrenceAnalysor refrenceAnalysor = new RefrenceAnalysor(data);
+        String str = refrenceAnalysor.getFinalJson();
+
+        return getObjectMapper().readValue(str, s);
     }
 
     public <T extends Object> T deserialize(String data, Type type) throws IOException {
-        return getObjectMapper().readValue(data, getObjectMapper().constructType(type));
+        RefrenceAnalysor refrenceAnalysor = new RefrenceAnalysor(data);
+        String str = refrenceAnalysor.getFinalJson();
+
+        return getObjectMapper().readValue(str, getObjectMapper().constructType(type));
     }
 
     public byte[] byteConvertor(Object object) throws JsonProcessingException, UnsupportedEncodingException {
