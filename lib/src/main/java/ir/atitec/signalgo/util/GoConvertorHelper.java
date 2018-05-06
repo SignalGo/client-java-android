@@ -58,10 +58,10 @@ public class GoConvertorHelper {
     }
 
     public <T extends Object> T deserialize(String data, Class<T> s) throws IOException {
-        RefrenceAnalysor refrenceAnalysor = new RefrenceAnalysor(data);
-        String str = refrenceAnalysor.getFinalJson();
+//        RefrenceAnalysor refrenceAnalysor = new RefrenceAnalysor(data);
+//        String str = refrenceAnalysor.getFinalJson();
 
-        return getObjectMapper().readValue(str, s);
+        return getObjectMapper().readValue(data, s);
     }
 
     public <T extends Object> T deserialize(String data, Type type) throws IOException {
