@@ -10,6 +10,7 @@ import ir.atitec.signalgo.models.JSOGGenerator;
 public class RefrenceAnalysor {
     public HashMap<Integer, String> hashMap = new HashMap<>();
     private String json;
+    public ArrayList<Integer> values = new ArrayList<>();
 
     public RefrenceAnalysor(String json) {
         this.json = json;
@@ -31,11 +32,24 @@ public class RefrenceAnalysor {
                 int x2 = json.indexOf("\"", x1 + 1);
                 int value = Integer.parseInt(json.substring(x1 + 1, x2));
                 hashMap.put(value, findBlock(index));
+                values.add(value);
                 hasId = true;
                 i = index + 1;
             }
         } while (hasId);
 
+
+        for (int k = 0; k < values.size(); k++) {
+            hashMap.put(values.get(k), fillRefrences(hashMap.get(values.get(k)), false));
+        }
+        json = fillRefrences(json, true);
+
+
+        return json;
+    }
+
+
+    private String fillRefrences(String json, boolean replaceWithHash) {
         boolean hasRef = false;
         int j = 0;
         do {
@@ -48,13 +62,15 @@ public class RefrenceAnalysor {
                 int value = Integer.parseInt(json.substring(x1 + 1, x2));
                 String str = hashMap.get(value);
                 String rep = json.substring(json.lastIndexOf("{", index), json.indexOf("}", index) + 1);
-                json = json.replace(rep, str);
-                j = index + 1;
+                if (replaceWithHash) {
+                    json = json.replace(rep, str);
+                } else {
+                    json = json.replace(rep, "null");
+                }
+                j = index + str.length();
                 hasRef = true;
             }
         } while (hasRef);
-
-
         return json;
     }
 
