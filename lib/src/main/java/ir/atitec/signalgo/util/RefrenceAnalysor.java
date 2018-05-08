@@ -64,10 +64,12 @@ public class RefrenceAnalysor {
                 String rep = json.substring(json.lastIndexOf("{", index), json.indexOf("}", index) + 1);
                 if (replaceWithHash) {
                     json = json.replace(rep, str);
+                    j = index + str.length();
                 } else {
                     json = json.replace(rep, "null");
+                    j = index + 1;
                 }
-                j = index + str.length();
+
                 hasRef = true;
             }
         } while (hasRef);
