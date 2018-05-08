@@ -143,7 +143,7 @@ public class HttpCore extends Core {
 
                 ResponseEntity responseEntity =
                         restTemplate.exchange(url, httpMethod, getEntuty(objects, keys), String.class);
-                Object response = getObjectMapper().readValue((String) responseEntity.getBody(), getObjectMapper().constructType(responseHandler.getType()));
+                Object response = getGoConvertorHelper().deserialize((String)responseEntity.getBody(),getObjectMapper().constructType(responseHandler.getType()));
                 if (cookieEnabled) {
                     Object o = responseEntity.getHeaders().get("Set-Cookie");
                     if (o != null) {
