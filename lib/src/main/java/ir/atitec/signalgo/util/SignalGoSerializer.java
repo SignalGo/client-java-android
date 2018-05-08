@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -17,9 +14,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
-
-import ir.atitec.signalgo.models.JSOGGenerator;
-import ir.atitec.signalgo.models.JSOGRef;
 
 /**
  * Created by hamed on 2/5/2018.
@@ -131,26 +125,26 @@ public class SignalGoSerializer {
 //        }
 //    }
 
-    public static class JSOGRefSerializer extends JsonSerializer<JSOGRef> {
+//    public static class JSOGRefSerializer extends JsonSerializer<JSOGRef> {
+////        @Override
+////        public JSOGRef deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
+////            JsonNode node = p.readValueAsTree();
+////            if (node.isTextual()) {
+////                return new JSOGRef(node.asInt());
+////            }
+////            JsonNode n = node.get(REF_KEY);
+////            if (n == null) {
+////                throw new JsonMappingException(p, "Could not find key '" + REF_KEY
+////                        + "' from (" + node.getClass().getName() + "): " + node);
+////            }
+////            return new JSOGRef(n.asInt());
+////        }
+//
 //        @Override
-//        public JSOGRef deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
-//            JsonNode node = p.readValueAsTree();
-//            if (node.isTextual()) {
-//                return new JSOGRef(node.asInt());
-//            }
-//            JsonNode n = node.get(REF_KEY);
-//            if (n == null) {
-//                throw new JsonMappingException(p, "Could not find key '" + REF_KEY
-//                        + "' from (" + node.getClass().getName() + "): " + node);
-//            }
-//            return new JSOGRef(n.asInt());
+//        public void serialize(JSOGRef value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+//            gen.writeObject(null);
 //        }
-
-        @Override
-        public void serialize(JSOGRef value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            gen.writeObject(null);
-        }
-    }
+//    }
 
 
 }
