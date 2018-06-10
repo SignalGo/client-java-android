@@ -73,6 +73,9 @@ public abstract class GoResponseHandler<T> {
         this.goMethodName = goMethodName;
     }
 
+    public GoMethodName getGoMethodName() {
+        return goMethodName;
+    }
 //    public void setConnector(Connector connector) {
 //        this.connector = connector;
 //    }
@@ -148,4 +151,6 @@ public abstract class GoResponseHandler<T> {
 //            return;
 //        connector.getMonitorableErrorMessage().onMonitor("کمی صبر کنید، سپس درخواستتان را مجدد ارسال کنید!",-2,goMethodName.printErrors());
     }
+
+
 }

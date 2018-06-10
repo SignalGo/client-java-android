@@ -255,6 +255,7 @@ public class HttpCore extends Core {
     @Override
     public void callMethod(GoResponseHandler responseHandler, Object... params) {
         GoMethodName methodName = findMethod(responseHandler);
+        responseHandler.setGoMethodName(methodName);
         if (methodName == null) {
             throw new RuntimeException("can't find Annotaion GoMethodName on method");
         }
