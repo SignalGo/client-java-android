@@ -26,26 +26,24 @@ import ir.atitec.signalgo.annotations.GoServiceName;
 /**
  * @author mehdi
  */
-@GoServiceName(name = "TransportService", usage = GoServiceName.GoUsageType.emit)
+@GoServiceName(name = "healthfamilyserviceserverservice", usage = GoServiceName.GoUsageType.emit)
 public class TestService implements ClientDuplex {
 
     public TestService() {
     }
 
-    @GoMethodName(name = "LoginPassenger", type = GoMethodName.MethodType.invoke, priority = GoMethodName.PriorityType.veryHigh,
-            errors = {@GoError(errorCode = 34, message = "نام کاربری و یا کلمه عبور اشتباه است!"), @GoError(errorCode = 10, message = "hello")}
-    )
-    public void hello(String username, String password, GoResponseHandler<List<MyClass>> goResponseHandler) {
-
-        goResponseHandler.setTypeToken(new TypeToken<Response<List<MyClass>>>() {
+    @GoMethodName(name = "HelloWorld", type = GoMethodName.MethodType.invoke, priority = GoMethodName.PriorityType.veryHigh)
+    public static void hello(String username, String password, GoResponseHandler<Boolean> goResponseHandler) {
+        goResponseHandler.setTypeToken2(new TypeToken<Boolean>() {
         });
         SignalGoCore.instance().callMethod(goResponseHandler, username, password);
     }
 
-    @GoMethodName(name = "/posts/{index}", type = GoMethodName.MethodType.httpGet)
-    public static void getPost(MyClass index, GoResponseHandler<MyClass> goResponseHandler) {
-        goResponseHandler.setTypeToken2(new TypeToken<MyClass>() {});
-        HttpCore.instance().callMethod(goResponseHandler, 2);
+    @GoMethodName(name = "Test", type = GoMethodName.MethodType.invoke)
+    public static void test(GoResponseHandler<String> goResponseHandler) {
+        goResponseHandler.setTypeToken2(new TypeToken<String>() {
+        });
+        SignalGoCore.instance().callMethod(goResponseHandler);
     }
 
     @GoMethodName(name = "/comments?postId={postId}", type = GoMethodName.MethodType.httpGet)

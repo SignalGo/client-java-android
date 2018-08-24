@@ -1,5 +1,7 @@
 package ir.atitec.signalgo;
 
+import android.util.Log;
+
 import ir.atitec.signalgo.annotations.GoMethodName;
 import ir.atitec.signalgo.annotations.GoServiceName;
 import ir.atitec.signalgo.models.GoKeyValue;
@@ -111,10 +113,10 @@ public class Connector {
         URI uri = URI.create(url);
         Connector connector = connect(uri.getHost(), uri.getPort());
         firstInitial();
-        goStreamWriter.typeAuthentication(outputStream);
-        if (!goStreamReader.onTypeAuthenticationResponse(inputStream))
-            throw new Exception("server can't authenticate client type!");
-        connectData(uri.getPath());
+        goStreamWriter.typeAuthentication(outputStream, url);
+//        if (!goStreamReader.onTypeAuthenticationResponse(inputStream))
+//            throw new Exception("server can't authenticate client type!");
+        //connectData(uri.getPath());
         listen();
         syncAllServices();
         doQueue();
@@ -225,7 +227,7 @@ public class Connector {
         String convertedData = new String(recievedData, CHARSET);
         MethodCallbackInfo mci = convertorHelper.deserialize(convertedData, MethodCallbackInfo.class);
 //        System.out.println("signalGo   get response method " + mci.getGuid());
-
+        Log.d("Response" , convertedData);
         clientHelper.setValue(mci.getGuid(), mci.getData());
         clientHelper.endWait(mci.getGuid());
     }
@@ -245,47 +247,47 @@ public class Connector {
         return callbackHandler.removeCallback(o);
     }
 
-    public void registerService(ClientDuplex cd) {
-        try {
-            Class s = cd.getClass();
-            AnnotatedElement serviceClass = (AnnotatedElement) s;
-            Annotation[] annotations = serviceClass.getAnnotations();
-            for (Annotation annotation : annotations) {
-                if (annotation instanceof GoServiceName) {
-                    if (mPendingServices == null) {
-                        mPendingServices = new ConcurrentHashMap<String, ClientDuplex>();
-                    }
-                    if (socket != null && socket.isConnected()) {
-                        syncService(((GoServiceName) annotation).name());
-                    } else {
-                        mPendingServices.put(((GoServiceName) annotation).name(), cd);
-                    }
-                    if (((GoServiceName) annotation).usage() != GoServiceName.GoUsageType.invoke) {
-                        initForCallback(cd);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            exceptionHandler(e);
-        }
-    }
+//    public void registerService(ClientDuplex cd) {
+//        try {
+//            Class s = cd.getClass();
+//            AnnotatedElement serviceClass = (AnnotatedElement) s;
+//            Annotation[] annotations = serviceClass.getAnnotations();
+//            for (Annotation annotation : annotations) {
+//                if (annotation instanceof GoServiceName) {
+//                    if (mPendingServices == null) {
+//                        mPendingServices = new ConcurrentHashMap<String, ClientDuplex>();
+//                    }
+//                    if (socket != null && socket.isConnected()) {
+//                        syncService(((GoServiceName) annotation).name());
+//                    } else {
+//                        mPendingServices.put(((GoServiceName) annotation).name(), cd);
+//                    }
+//                    if (((GoServiceName) annotation).usage() != GoServiceName.GoUsageType.invoke) {
+//                        initForCallback(cd);
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            exceptionHandler(e);
+//        }
+//    }
 
-    private void syncService(String name) {
-        try {
-            Object o = invoke("/RegisterService", name, Object.class);
-            if (mPendingServices != null && mPendingServices.containsKey(name)) {
-//                ((ClientDuplex) this.mPendingServices.get(name)).getConnector(this);
-                mPendingServices.remove(name);
-            }
-        } catch (Exception ex) {
-            exceptionHandler(ex);
-        }
-    }
+//    private void syncService(String name) {
+//        try {
+//            Object o = invoke("/RegisterService", name, Object.class);
+//            if (mPendingServices != null && mPendingServices.containsKey(name)) {
+////                ((ClientDuplex) this.mPendingServices.get(name)).getConnector(this);
+//                mPendingServices.remove(name);
+//            }
+//        } catch (Exception ex) {
+//            exceptionHandler(ex);
+//        }
+//    }
 
     private void syncAllServices() {
-        for (Map.Entry<String, ClientDuplex> entry : mPendingServices.entrySet()) {
-            syncService(entry.getKey());
-        }
+//        for (Map.Entry<String, ClientDuplex> entry : mPendingServices.entrySet()) {
+//            syncService(entry.getKey());
+//        }
 //        currentState = GoSocketListener.SocketState.Connected;
         if (socketListener != null) {
             socketListener.onSocketChange(lastState, currentState);
@@ -368,7 +370,7 @@ public class Connector {
 //    }
 //
 
-    public void autoInvokeAsync(GoMethodName methodName,final GoResponseHandler goResponseHandler, final Object... param) {
+    public void autoInvokeAsync(GoMethodName methodName, final GoResponseHandler goResponseHandler, final Object... param) {
         try {
             final String serviceName = GoBackStackHelper.getServiceName();
 //            final GoMethodName methodName = GoBackStackHelper.getMethodName();
@@ -424,7 +426,7 @@ public class Connector {
                     QueueMethods queueMethods = null;
                     try {
                         queueMethods = queueMethodses.take();
-                        //System.out.println("take successfully " + queueMethods.priority);
+                        System.out.println("take successfully " + queueMethods.priority);
                     } catch (InterruptedException e) {
                         exceptionHandler(e);
                         System.out.println("take queueMethodses exception");
@@ -437,7 +439,11 @@ public class Connector {
                                 System.out.println(queueMethods.methodName + " " + o.toString());
                             else
                                 System.out.println(queueMethods.methodName + " null Response");
-                            queueMethods.goResponseHandler.onServerResponse((Response) o);
+                            if (o instanceof Response) {
+                                queueMethods.goResponseHandler.onServerResponse((Response) o);
+                            } else {
+                                queueMethods.goResponseHandler.onServerResponse(o);
+                            }
                         }
 
                     } catch (Exception ex) {

@@ -5,11 +5,6 @@
  */
 package ir.atitec.signalgoApp;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
-import org.joda.time.DateTime;
-
 import ir.atitec.signalgo.models.Response;
 
 /**

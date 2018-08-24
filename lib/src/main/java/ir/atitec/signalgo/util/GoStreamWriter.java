@@ -53,9 +53,8 @@ public class GoStreamWriter {
         });
     }
 
-    public void typeAuthentication(OutputStream outputStream) throws IOException {
-        byte[] data=convertorHelper.byteConvertor("SignalGo/1.0");
-        byte[] d= Charset.forName("UTF-8").encode("SignalGo/1.0").array();
+    public void typeAuthentication(OutputStream outputStream,String url) throws IOException {
+        byte[] data= ("SignalGo/4.0 " + url + "\r\n").getBytes();
         outputStream.write(data);
     }
     

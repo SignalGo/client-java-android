@@ -66,11 +66,11 @@ public class SignalGoCore extends Core implements NetworkObserver, SessionRespon
         connector = new Connector(getGoConvertorHelper());
         connector.setTimeout(socketTimeOut);
         lState = cState = GoSocketListener.SocketState.Disconnected;
-        if (invokeDuplex != null)
-            connector.registerService(invokeDuplex);
-        if (emitDuplex != null) {
-            connector.initForCallback(emitDuplex);
-        }
+//        if (invokeDuplex != null)
+//            connector.registerService(invokeDuplex);
+//        if (emitDuplex != null) {
+//            connector.initForCallback(emitDuplex);
+//        }
 
         connector.onSocketChangeListener(socketChangeListener());
         connector.connectAsync(getUrl());
@@ -136,21 +136,21 @@ public class SignalGoCore extends Core implements NetworkObserver, SessionRespon
     }
 
 
-    public SignalGoCore registerInvokeDuplex(ClientDuplex clientDuplex) {
-        invokeDuplex = clientDuplex;
-        if (connector != null) {
-            connector.registerService(clientDuplex);
-        }
-        return this;
-    }
-
-    public SignalGoCore registerEmitDuplex(ClientDuplex clientDuplex) {
-        emitDuplex = clientDuplex;
-        if (connector != null) {
-            connector.initForCallback(clientDuplex);
-        }
-        return this;
-    }
+//    public SignalGoCore registerInvokeDuplex(ClientDuplex clientDuplex) {
+//        invokeDuplex = clientDuplex;
+//        if (connector != null) {
+//            connector.registerService(clientDuplex);
+//        }
+//        return this;
+//    }
+//
+//    public SignalGoCore registerEmitDuplex(ClientDuplex clientDuplex) {
+//        emitDuplex = clientDuplex;
+//        if (connector != null) {
+//            connector.initForCallback(clientDuplex);
+//        }
+//        return this;
+//    }
 
 
     public synchronized static SignalGoCore instance() {
