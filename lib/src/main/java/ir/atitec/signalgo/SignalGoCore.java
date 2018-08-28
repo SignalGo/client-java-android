@@ -131,7 +131,7 @@ public class SignalGoCore extends Core implements NetworkObserver, SessionRespon
         if (connectionObservers == null)
             return;
         for (int i = 0; i < connectionObservers.size(); i++) {
-            connectionObservers.get(i).onServerChange(lState, cState, isConnected());
+            connectionObservers.get(i).onServerChange(lState, cState,  sessionManager == null ? isConnected() : isConnected() && hasSession);
         }
     }
 
@@ -214,7 +214,7 @@ public class SignalGoCore extends Core implements NetworkObserver, SessionRespon
             connectionObservers = new ArrayList<>();
         if (!connectionObservers.contains(connectionObserver))
             connectionObservers.add(connectionObserver);
-        connectionObserver.onServerChange(lState, cState, isConnected());
+        connectionObserver.onServerChange(lState, cState, sessionManager == null ? isConnected() : isConnected() && hasSession);
     }
 
     public boolean destroyObserver(ConnectionObserver connectionObserver) {
