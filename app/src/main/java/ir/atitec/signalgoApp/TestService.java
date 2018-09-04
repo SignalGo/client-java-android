@@ -15,6 +15,7 @@ import java.util.List;
 
 import ir.atitec.signalgo.HttpCore;
 import ir.atitec.signalgo.SignalGoCore;
+import ir.atitec.signalgo.annotations.GoHeader;
 import ir.atitec.signalgo.interfaces.ClientDuplex;
 import ir.atitec.signalgo.Connector;
 import ir.atitec.signalgo.models.Response;
@@ -28,6 +29,7 @@ import ir.atitec.signalgo.annotations.GoServiceName;
  */
 @GoServiceName(name = "healthfamilyserviceserverservice", usage = GoServiceName.GoUsageType.emit)
 public class TestService implements ClientDuplex {
+    final static String str = "";
 
     public TestService() {
     }
@@ -50,6 +52,7 @@ public class TestService implements ClientDuplex {
     public static void getComments(int postId, GoResponseHandler<List<TestComment>> goResponseHandler) {
         goResponseHandler.setTypeToken2(new TypeToken<List<TestComment>>() {
         });
+        goResponseHandler.addHeader(new GoHeader("Adgdfg", "ASdfdg"));
         HttpCore.instance().callMethod(goResponseHandler, postId);
     }
 

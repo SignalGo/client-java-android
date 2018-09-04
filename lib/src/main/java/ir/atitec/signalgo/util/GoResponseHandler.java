@@ -6,10 +6,13 @@ import android.util.Log;
 import com.google.common.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import ir.atitec.signalgo.Connector;
 import ir.atitec.signalgo.Core;
 import ir.atitec.signalgo.annotations.GoError;
+import ir.atitec.signalgo.annotations.GoHeader;
 import ir.atitec.signalgo.annotations.GoMethodName;
 import ir.atitec.signalgo.models.Response;
 import needle.Needle;
@@ -21,7 +24,7 @@ public abstract class GoResponseHandler<T> {
     //    private Connector connector;
     private Core core;
     private GoMethodName goMethodName;
-
+    private List<GoHeader> goHeaders = new ArrayList<>();
     private TypeToken<Response<T>> typeToken;
     private TypeToken<T> typeToken2;
 
@@ -111,6 +114,15 @@ public abstract class GoResponseHandler<T> {
         this.typeToken2 = typeToken2;
     }
 
+    public void addHeader(GoHeader goHeader) {
+        goHeaders.add(goHeader);
+    }
+
+
+    public List<GoHeader> getGoHeaders() {
+        return goHeaders;
+    }
+
     public abstract void onSuccess(T t);
 
     public void onError(Object response) {
@@ -151,8 +163,6 @@ public abstract class GoResponseHandler<T> {
 //            return;
 //        connector.getMonitorableErrorMessage().onMonitor("کمی صبر کنید، سپس درخواستتان را مجدد ارسال کنید!",-2,goMethodName.printErrors());
     }
-
-
 
 
 }

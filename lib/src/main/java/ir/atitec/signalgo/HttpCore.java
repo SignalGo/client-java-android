@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import ir.atitec.signalgo.annotations.GoHeader;
 import ir.atitec.signalgo.annotations.GoMethodName;
 import ir.atitec.signalgo.interfaces.MonitorableMessage;
 import ir.atitec.signalgo.models.Response;
@@ -142,8 +143,8 @@ public class HttpCore extends Core {
             try {
 
                 ResponseEntity responseEntity =
-                        restTemplate.exchange(url, httpMethod, getEntuty(objects, keys), String.class);
-                Object response = getGoConvertorHelper().deserialize((String)responseEntity.getBody(),getObjectMapper().constructType(responseHandler.getType()));
+                        restTemplate.exchange(url, httpMethod, getEntity(objects, keys, responseHandler.getGoHeaders()), String.class);
+                Object response = getGoConvertorHelper().deserialize((String) responseEntity.getBody(), getObjectMapper().constructType(responseHandler.getType()));
                 if (cookieEnabled) {
                     Object o = responseEntity.getHeaders().get("Set-Cookie");
                     if (o != null) {
@@ -166,8 +167,11 @@ public class HttpCore extends Core {
             responseHandler.onServerResponse(response);
         }
 
-        private HttpEntity getEntuty(Object[] objects, String[] keys) {
+        private HttpEntity getEntity(Object[] objects, String[] keys, List<GoHeader> goHeaders) {
             HttpHeaders httpHeaders = new HttpHeaders();
+            for (int i = 0; i < goHeaders.size(); i++) {
+                httpHeaders.add(goHeaders.get(i).header, goHeaders.get(i).value);
+            }
             if (cookie != null && cookieEnabled) {
                 httpHeaders.put("Cookie", cookie);
             }
