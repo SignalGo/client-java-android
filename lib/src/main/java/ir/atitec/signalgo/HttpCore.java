@@ -277,7 +277,12 @@ public class HttpCore extends Core {
             }
 
             try {
-                String str = getObjectMapper().writeValueAsString(params[i]);
+                String str;
+                if (params[i] instanceof String) {
+                    str = (String) params[i];
+                } else {
+                    str = getObjectMapper().writeValueAsString(params[i]);
+                }
                 url = url.replace("{" + url.substring(index + 1, index2) + "}", str + "");
                 int x = 0;
                 if ((x = str.indexOf("}")) != -1) {
