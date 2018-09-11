@@ -190,7 +190,13 @@ public class HttpCore extends Core {
                     for (int i = 0; i < keys.length; i++) {
                         if (objects[i] != null) {
                             try {
-                                map.add(keys[i], getObjectMapper().writeValueAsString(objects[i]));
+                                String str = "";
+                                if (objects[i] instanceof String) {
+                                    str = (String) objects[i];
+                                } else {
+                                    str = getObjectMapper().writeValueAsString(objects[i]);
+                                }
+                                map.add(keys[i], str);
                             } catch (JsonProcessingException e) {
                                 e.printStackTrace();
                             }
