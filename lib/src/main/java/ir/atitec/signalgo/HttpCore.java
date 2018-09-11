@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import org.joda.time.DateTimeZone;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -78,35 +80,35 @@ public class HttpCore extends Core {
     }
 
 
-    private void post(String url, GoResponseHandler responseHandler, Object... params) {
+//    private void post(String url, GoResponseHandler responseHandler, Object... params) {
+//
+//        if (Build.VERSION.SDK_INT > 16)
+//            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+//        else
+//            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).execute(params);
+//    }
+
+    private void send(String url, String[] keys, GoResponseHandler responseHandler, GoMethodName.MethodType methodType, Object... params) {
 
         if (Build.VERSION.SDK_INT > 16)
-            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+            new MyAsync(getUrl() + url, responseHandler, methodType).setKeys(keys).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
         else
-            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).execute(params);
+            new MyAsync(getUrl() + url, responseHandler, methodType).setKeys(keys).execute(params);
     }
 
-    private void postMultipart(String url, String[] keys, GoResponseHandler responseHandler, Object... params) {
+//    private void get(String url, GoResponseHandler responseHandler) {
+//        if (Build.VERSION.SDK_INT > 16)
+//            new MyAsync(getUrl() + url, responseHandler, HttpMethod.GET).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        else
+//            new MyAsync(getUrl() + url, responseHandler, HttpMethod.GET).execute();
+//    }
 
-        if (Build.VERSION.SDK_INT > 16)
-            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).setKeys(keys).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-        else
-            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).setKeys(keys).execute(params);
-    }
-
-    private void get(String url, GoResponseHandler responseHandler) {
-        if (Build.VERSION.SDK_INT > 16)
-            new MyAsync(getUrl() + url, responseHandler, HttpMethod.GET).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        else
-            new MyAsync(getUrl() + url, responseHandler, HttpMethod.GET).execute();
-    }
-
-    private void uploadFile(String url, GoResponseHandler responseHandler, File file) {
-        if (Build.VERSION.SDK_INT > 16)
-            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, file);
-        else
-            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).execute(file);
-    }
+//    private void uploadFile(String url, GoResponseHandler responseHandler, File file) {
+//        if (Build.VERSION.SDK_INT > 16)
+//            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, file);
+//        else
+//            new MyAsync(getUrl() + url, responseHandler, HttpMethod.POST).execute(file);
+//    }
 
 
     private GoMethodName findMethod(GoResponseHandler responseHandler) {
@@ -125,17 +127,27 @@ public class HttpCore extends Core {
         GoResponseHandler responseHandler;
         String url;
         HttpMethod httpMethod;
+        GoMethodName.MethodType methodType;
         String[] keys;
 
-        public MyAsync(String url, GoResponseHandler responseHandler, HttpMethod httpMethod) {
+        public MyAsync(String url, GoResponseHandler responseHandler, GoMethodName.MethodType methodType) {
             this.responseHandler = responseHandler;
             this.url = url;
-            this.httpMethod = httpMethod;
+            this.methodType = methodType;
+            setHttpMethod(methodType);
         }
 
         public MyAsync setKeys(String[] keys) {
             this.keys = keys;
             return this;
+        }
+
+        private void setHttpMethod(GoMethodName.MethodType methodType) {
+            if (methodType.getId() == GoMethodName.MethodType.httpGet.getId()) {
+                httpMethod = HttpMethod.GET;
+            } else {
+                httpMethod = HttpMethod.POST;
+            }
         }
 
         @Override
@@ -151,6 +163,7 @@ public class HttpCore extends Core {
                         cookie = (List<String>) o;
                     }
                 }
+                Log.d("HttpCore", url + "  " + response);
                 //if (response != null)
                 //  Log.e("Core", "response : " + url + "  " + response.message + " " + response.stack);
                 return response;
@@ -177,14 +190,13 @@ public class HttpCore extends Core {
             }
             HttpEntity httpEntity = null;
             if (objects != null && objects.length > 0) {
-                if (objects.length == 1 && objects[0] instanceof File) {
+                if (methodType == GoMethodName.MethodType.httpUploadFile) {
                     httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
                     LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
                     FileSystemResource value = new FileSystemResource((File) objects[0]);
                     map.add("file", value);
                     httpEntity = new HttpEntity(map, httpHeaders);
-
-                } else if (keys != null && keys.length > 0) {
+                } else if (methodType == GoMethodName.MethodType.httpPost_formData) {
                     httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
                     LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
                     for (int i = 0; i < keys.length; i++) {
@@ -203,21 +215,23 @@ public class HttpCore extends Core {
                         }
                     }
                     httpEntity = new HttpEntity(map, httpHeaders);
-                } else {
+                } else if (methodType == GoMethodName.MethodType.httpPost) {
                     httpHeaders.setContentType(MediaType.APPLICATION_JSON);
                     httpEntity = new HttpEntity(objects[0], httpHeaders);
+                } else if (methodType == GoMethodName.MethodType.httpPost_json) {
+                    if (keys != null) {
+                        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                        JSONObject jsonObject = new JSONObject();
+                        for (int i = 0; i < keys.length; i++) {
+                            try {
+                                jsonObject.put(keys[i], objects[i]);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        httpEntity = new HttpEntity(jsonObject.toString(), httpHeaders);
+                    }
                 }
-
-//                else if (keys != null && keys.length == objects.length) {
-//                    httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
-//                    LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-//                    for (int i = 0; i < objects.length; i++) {
-//                        map.add(keys[i], objects[i]);
-//                    }
-//                    httpEntity = new HttpEntity(map, httpHeaders);
-//                } else {
-//                    httpEntity = new HttpEntity(httpHeaders);
-//                }
             } else {
                 httpEntity = new HttpEntity(httpHeaders);
             }
@@ -311,15 +325,23 @@ public class HttpCore extends Core {
         }
 
         if (methodName.type().getId() == GoMethodName.MethodType.httpGet.getId()) {
-            get(url, responseHandler);
+            send(url, null, responseHandler, methodName.type());
         } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost.getId()) {
-            if (pa.length <= 1)
-                post(url, responseHandler, pa);
+            if (pa.length == 1)
+                send(url, null, responseHandler, methodName.type(), pa);
             else
-                postMultipart(url, methodName.multipartKeys(), responseHandler, pa);
+                throw new RuntimeException("if you have more than one param, you must choose jsonPost or formDataPost");
+        } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_json.getId()) {
+            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
+        } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_formData.getId()) {
+            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
         } else if (methodName.type().getId() == GoMethodName.MethodType.httpUploadFile.getId()) {
-            File f = (File) params[i];
-            uploadFile(url, responseHandler, f);
+            if (params.length == 1) {
+                File f = (File) params[i];
+                send(url, null, responseHandler, methodName.type(), f);
+            } else {
+                throw new RuntimeException("upload file must have just one param for post and other param must send with GET!!");
+            }
         }
     }
 

@@ -48,12 +48,12 @@ public class TestService implements ClientDuplex {
         SignalGoCore.instance().callMethod(goResponseHandler);
     }
 
-    @GoMethodName(name = "/comments?postId={postId}", type = GoMethodName.MethodType.httpGet)
-    public static void getComments(int postId, GoResponseHandler<List<TestComment>> goResponseHandler) {
-        goResponseHandler.setTypeToken2(new TypeToken<List<TestComment>>() {
+    @GoMethodName(name = "/user/login", type = GoMethodName.MethodType.httpPost_json, multipartKeys = {"mac_address", "phone", "device"})
+    public static void login(GoResponseHandler<Object> goResponseHandler) {
+        goResponseHandler.setTypeToken2(new TypeToken<Object>() {
         });
-        goResponseHandler.addHeader(new GoHeader("Adgdfg", "ASdfdg"));
-        HttpCore.instance().callMethod(goResponseHandler, postId);
+//        goResponseHandler.addHeader(new GoHeader("Adgdfg", "ASdfdg"));
+        HttpCore.instance().callMethod(goResponseHandler, "99:00:23:23:64:34", "0934323433", "tv");
     }
 
 }

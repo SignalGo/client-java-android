@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface GoMethodName {
     public enum MethodType {
-        invoke(0), emit(1),httpGet(2),httpPost(3),httpUploadFile(4);
+        invoke(0), emit(1),httpGet(2),httpPost(3),httpUploadFile(4),httpPost_json(5),httpPost_formData(6);
 
         private int id;
 
