@@ -290,7 +290,7 @@ public class HttpCore extends Core {
         String url = methodName.name();
         int index = 0, index2 = 0;
         do {
-            index = url.indexOf("{", index + 2);
+            index = url.indexOf("{", index + 1);
             index2 = url.indexOf("}", index2 + 1);
             if (index == -1 || index2 == -1) {
                 break;
