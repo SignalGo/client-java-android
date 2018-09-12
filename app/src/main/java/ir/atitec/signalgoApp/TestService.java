@@ -48,7 +48,7 @@ public class TestService implements ClientDuplex {
         SignalGoCore.instance().callMethod(goResponseHandler);
     }
 
-    @GoMethodName(name = "/user/login", type = GoMethodName.MethodType.httpPost_json, multipartKeys = {"mac_address", "phone", "device"})
+    @GoMethodName(name = "/{type}/recommendation/launcher?count={count}&offset={offset}", type = GoMethodName.MethodType.httpGet, multipartKeys = {"mac_address", "phone", "device"})
     public static void login(GoResponseHandler<Object> goResponseHandler) {
         goResponseHandler.setTypeToken2(new TypeToken<Object>() {
         });
