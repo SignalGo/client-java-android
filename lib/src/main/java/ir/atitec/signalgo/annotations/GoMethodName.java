@@ -55,4 +55,6 @@ public @interface GoMethodName {
     boolean doMonitor() default true;
 
     String[] multipartKeys() default {};
+
+    String serverUrl() default "";
 }

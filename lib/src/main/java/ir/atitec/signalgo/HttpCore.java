@@ -89,11 +89,11 @@ public class HttpCore extends Core {
 //    }
 
     private void send(String url, String[] keys, GoResponseHandler responseHandler, GoMethodName.MethodType methodType, Object... params) {
-
+        String link = responseHandler.getGoMethodName().serverUrl().equals("") ? getUrl() + url : responseHandler.getGoMethodName().serverUrl() + url;
         if (Build.VERSION.SDK_INT > 16)
-            new MyAsync(getUrl() + url, responseHandler, methodType).setKeys(keys).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+            new MyAsync(link, responseHandler, methodType).setKeys(keys).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
         else
-            new MyAsync(getUrl() + url, responseHandler, methodType).setKeys(keys).execute(params);
+            new MyAsync(link, responseHandler, methodType).setKeys(keys).execute(params);
     }
 
 //    private void get(String url, GoResponseHandler responseHandler) {
