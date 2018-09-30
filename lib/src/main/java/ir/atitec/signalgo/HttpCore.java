@@ -21,6 +21,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
@@ -156,6 +157,9 @@ public class HttpCore extends Core {
 
                 ResponseEntity responseEntity =
                         restTemplate.exchange(url, httpMethod, getEntity(objects, keys, responseHandler.getGoHeaders()), String.class);
+                if (responseEntity.getStatusCode() != HttpStatus.OK) {
+                    return responseEntity;
+                }
                 if (responseHandler.getType() == null) {
                     return responseEntity;
                 }
