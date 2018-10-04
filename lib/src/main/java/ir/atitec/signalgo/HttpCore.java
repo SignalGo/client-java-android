@@ -35,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import ir.atitec.signalgo.annotations.GoHeader;
@@ -265,7 +266,7 @@ public class HttpCore extends Core {
         FormHttpMessageConverter form = new FormHttpMessageConverter();
         form.addPartConverter(m);
         restTemplate.getMessageConverters().add(form);
-        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
         restTemplate.getMessageConverters().add(m);
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 

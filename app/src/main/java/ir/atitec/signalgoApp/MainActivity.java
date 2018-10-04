@@ -126,14 +126,19 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        TestService.login(new GoResponseHandler<Object>() {
+//        TestService.login(new GoResponseHandler<Object>() {
+//            @Override
+//            public void onSuccess(Object o) {
+////                Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+        TestService.followTag(new GoResponseHandler<Object>() {
             @Override
             public void onSuccess(Object o) {
-                Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "hello!!!!!!!!!!!", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
 
