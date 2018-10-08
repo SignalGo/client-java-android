@@ -159,9 +159,11 @@ public class HttpCore extends Core {
                 ResponseEntity responseEntity =
                         restTemplate.exchange(url, httpMethod, getEntity(objects, keys, responseHandler.getGoHeaders()), String.class);
                 if (responseEntity.getStatusCode() != HttpStatus.OK) {
+                    Log.e("HttpCore", url + "  " + responseEntity.toString());
                     return responseEntity;
                 }
                 if (responseHandler.getType() == null) {
+                    Log.d("HttpCore", url + "  " + responseEntity.toString());
                     return responseEntity;
                 }
                 Object response = getGoConvertorHelper().deserialize((String) responseEntity.getBody(), getObjectMapper().constructType(responseHandler.getType()));
