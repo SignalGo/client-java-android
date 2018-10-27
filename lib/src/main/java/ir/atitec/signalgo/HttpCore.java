@@ -363,17 +363,21 @@ public class HttpCore extends Core {
                 send(url, null, responseHandler, methodName.type(), pa);
             else
                 throw new RuntimeException("if you have more than one param, you must choose jsonPost or formDataPost");
-        } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_json.getId()) {
-            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
-        } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_formData.getId()) {
-            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
-        } else if (methodName.type().getId() == GoMethodName.MethodType.httpUploadFile.getId()) {
+        }
+//        else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_json.getId()) {
+//            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
+//        } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_formData.getId()) {
+//
+//        }
+        else if (methodName.type().getId() == GoMethodName.MethodType.httpUploadFile.getId()) {
             if (params.length == 1) {
                 File f = (File) params[i];
                 send(url, null, responseHandler, methodName.type(), f);
             } else {
                 throw new RuntimeException("upload file must have just one param for post and other param must send with GET!!");
             }
+        } else {
+            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
         }
     }
 
