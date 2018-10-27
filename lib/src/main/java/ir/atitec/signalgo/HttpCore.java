@@ -147,6 +147,10 @@ public class HttpCore extends Core {
         private void setHttpMethod(GoMethodName.MethodType methodType) {
             if (methodType.getId() == GoMethodName.MethodType.httpGet.getId()) {
                 httpMethod = HttpMethod.GET;
+            } else if (methodType.getId() == GoMethodName.MethodType.httpPut_json.getId() || methodType.getId() == GoMethodName.MethodType.httpPut_formData.getId()) {
+                httpMethod = HttpMethod.PUT;
+            } else if (methodType.getId() == GoMethodName.MethodType.httpDelete.getId()) {
+                httpMethod = HttpMethod.DELETE;
             } else {
                 httpMethod = HttpMethod.POST;
             }
@@ -206,7 +210,7 @@ public class HttpCore extends Core {
                     FileSystemResource value = new FileSystemResource((File) objects[0]);
                     map.add("file", value);
                     httpEntity = new HttpEntity(map, httpHeaders);
-                } else if (methodType == GoMethodName.MethodType.httpPost_formData) {
+                } else if (methodType == GoMethodName.MethodType.httpPost_formData || methodType == GoMethodName.MethodType.httpPut_formData) {
                     httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
                     LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
                     for (int i = 0; i < keys.length; i++) {
@@ -240,6 +244,24 @@ public class HttpCore extends Core {
                             }
                         }
                         httpEntity = new HttpEntity(jsonObject.toString(), httpHeaders);
+                    }
+                } else if (methodType == GoMethodName.MethodType.httpPut_json) {
+                    if (objects.length == 1) {
+                        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                        httpEntity = new HttpEntity(objects[0], httpHeaders);
+                    } else {
+                        if (keys != null) {
+                            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                            JSONObject jsonObject = new JSONObject();
+                            for (int i = 0; i < keys.length; i++) {
+                                try {
+                                    jsonObject.put(keys[i], objects[i]);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            httpEntity = new HttpEntity(jsonObject.toString(), httpHeaders);
+                        }
                     }
                 }
             } else {
