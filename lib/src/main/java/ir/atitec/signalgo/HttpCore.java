@@ -55,7 +55,7 @@ public class HttpCore extends Core {
     private boolean cookieEnabled = false;
     private RestTemplate restTemplate;
     private List<String> cookie;
-
+    private boolean setUtf8 = true;
 
     private HttpCore() {
 
@@ -281,6 +281,10 @@ public class HttpCore extends Core {
         return this;
     }
 
+    public HttpCore(boolean setUtf8) {
+        this.setUtf8 = setUtf8;
+    }
+
     @Override
     public void init() {
         super.init();
@@ -290,7 +294,10 @@ public class HttpCore extends Core {
         FormHttpMessageConverter form = new FormHttpMessageConverter();
         form.addPartConverter(m);
         restTemplate.getMessageConverters().add(form);
-        restTemplate.getMessageConverters().add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+        if (setUtf8)
+            restTemplate.getMessageConverters().add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+        else
+            restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
         restTemplate.getMessageConverters().add(m);
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 
