@@ -276,7 +276,7 @@ public class HttpCore extends Core {
         return cookieEnabled;
     }
 
-    public Core setCookieEnabled(boolean cookieEnabled) {
+    public HttpCore setCookieEnabled(boolean cookieEnabled) {
         this.cookieEnabled = cookieEnabled;
         return this;
     }
@@ -285,8 +285,9 @@ public class HttpCore extends Core {
         return setUtf8;
     }
 
-    public void setSetUtf8(boolean setUtf8) {
+    public HttpCore setSetUtf8(boolean setUtf8) {
         this.setUtf8 = setUtf8;
+        return this;
     }
 
     @Override
