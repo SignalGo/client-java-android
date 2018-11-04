@@ -281,7 +281,11 @@ public class HttpCore extends Core {
         return this;
     }
 
-    public HttpCore(boolean setUtf8) {
+    public boolean isSetUtf8() {
+        return setUtf8;
+    }
+
+    public void setSetUtf8(boolean setUtf8) {
         this.setUtf8 = setUtf8;
     }
 
