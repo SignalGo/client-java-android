@@ -376,7 +376,7 @@ public class HttpCore extends Core {
             }
             i++;
         } while (true);
-        if (url.charAt(url.length() - 1) == '?') {
+        if (url.length() > 0 && url.charAt(url.length() - 1) == '?') {
             url = url.substring(0, url.length() - 1);
         }
         Object[] pa = {};
