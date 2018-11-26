@@ -79,7 +79,7 @@ public class TestService implements ClientDuplex {
         goResponseHandler.setTypeToken2(new TypeToken<Object>() {
         });
 //        goResponseHandler.addHeader(new GoHeader("Adgdfg", "ASdfdg"));
-        HttpCore.instance().callMethod(goResponseHandler, null, null, null);
+        HttpCore.instance().callMethod(goResponseHandler, null, 10, null);
     }
 }
 
