@@ -56,6 +56,7 @@ public class HttpCore extends Core {
     private RestTemplate restTemplate;
     private List<String> cookie;
     private boolean setUtf8 = true;
+    private boolean ignoreNull = true;
 
     private HttpCore() {
 
@@ -290,6 +291,15 @@ public class HttpCore extends Core {
         return this;
     }
 
+    public boolean isIgnoreNull() {
+        return ignoreNull;
+    }
+
+    public HttpCore setIgnoreNull(boolean ignoreNull) {
+        this.ignoreNull = ignoreNull;
+        return this;
+    }
+
     @Override
     public void init() {
         super.init();
@@ -340,25 +350,35 @@ public class HttpCore extends Core {
                 break;
             }
 
-            try {
-                String str;
-                if (params[i] instanceof String) {
-                    str = (String) params[i];
-                } else {
-                    str = getObjectMapper().writeValueAsString(params[i]);
+            if (params[i] == null && ignoreNull) {
+                int a1 = url.lastIndexOf("?", index);
+                int a2 = url.lastIndexOf("&", index);
+                int a3 = url.lastIndexOf("/", index);
+                int max = Math.max(Math.max(a1, a2), a3);
+                url = url.substring(0, max + 1) + url.substring(Math.min(index2 + 2, url.length()), url.length());
+            } else {
+                try {
+                    String str;
+                    if (params[i] instanceof String) {
+                        str = (String) params[i];
+                    } else {
+                        str = getObjectMapper().writeValueAsString(params[i]);
+                    }
+                    url = url.replace("{" + url.substring(index + 1, index2) + "}", str + "");
+                    int x = 0;
+                    if ((x = str.indexOf("}")) != -1) {
+                        index += x;
+                        index2 += x;
+                    }
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
                 }
-                url = url.replace("{" + url.substring(index + 1, index2) + "}", str + "");
-                int x = 0;
-                if ((x = str.indexOf("}")) != -1) {
-                    index += x;
-                    index2 += x;
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
             }
             i++;
         } while (true);
-
+        if (url.charAt(url.length() - 1) == '?') {
+            url = url.substring(0, url.length() - 1);
+        }
         Object[] pa = {};
 
         if (params.length > i) {
