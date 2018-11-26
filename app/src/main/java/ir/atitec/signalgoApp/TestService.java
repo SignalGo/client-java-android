@@ -56,7 +56,7 @@ public class TestService implements ClientDuplex {
         HttpCore.instance().callMethod(goResponseHandler, "99:00:23:23:64:34", "0934323433", "tv");
     }
 
-    @GoMethodName(name = "/user/tag/follow",serverUrl = "http://185.105.239.40:4949/app", type = GoMethodName.MethodType.httpPost_json, multipartKeys = {"tag"})
+    @GoMethodName(name = "/user/tag/follow", serverUrl = "http://185.105.239.40:4949/app", type = GoMethodName.MethodType.httpPost_json, multipartKeys = {"tag"})
     public static void followTag(GoResponseHandler<Object> goResponseHandler) {
         goResponseHandler.setTypeToken2(new TypeToken<Object>() {
         });
@@ -65,6 +65,22 @@ public class TestService implements ClientDuplex {
         HttpCore.instance().callMethod(goResponseHandler, "سیاسی");
     }
 
+    @GoMethodName(name = "/api/Token", serverUrl = "http://52.72.248.62/MealsyIdentityServices", type = GoMethodName.MethodType.httpPost_json, multipartKeys = {"username", "password"})
+    public static void getToken(String username, String password, GoResponseHandler<Object> responseHandler) {
+        responseHandler.setTypeToken2(new TypeToken<Object>() {
+        });
+
+        HttpCore.instance().callMethod(responseHandler, username, password);
+    }
+
+
+    @GoMethodName(name = "/type/{recommendation}/launcher?count={count}&offset={offset}", type = GoMethodName.MethodType.httpGet)
+    public static void testNull(GoResponseHandler<Object> goResponseHandler) {
+        goResponseHandler.setTypeToken2(new TypeToken<Object>() {
+        });
+//        goResponseHandler.addHeader(new GoHeader("Adgdfg", "ASdfdg"));
+        HttpCore.instance().callMethod(goResponseHandler, null, null, null);
+    }
 }
 
 

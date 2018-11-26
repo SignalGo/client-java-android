@@ -118,6 +118,19 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .withUrl("http://185.105.239.40:4949/app").init();
 
+//        TestService.getToken("username", "password", new GoResponseHandler<Object>() {
+//            @Override
+//            public void onSuccess(Object o) {
+//
+//            }
+//        });
+        TestService.testNull(new GoResponseHandler<Object>() {
+            @Override
+            public void onSuccess(Object o) {
+
+            }
+        });
+
 //
 //        TestService.getPost(new MyClass(), new GoResponseHandler<MyClass>() {
 //            @Override
@@ -132,13 +145,13 @@ public class MainActivity extends AppCompatActivity {
 ////                Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
 //            }
 //        });
-
-        TestService.followTag(new GoResponseHandler<Object>() {
-            @Override
-            public void onSuccess(Object o) {
-                Toast.makeText(MainActivity.this, "hello!!!!!!!!!!!", Toast.LENGTH_SHORT).show();
-            }
-        });
+//
+//        TestService.followTag(new GoResponseHandler<Object>() {
+//            @Override
+//            public void onSuccess(Object o) {
+//                Toast.makeText(MainActivity.this, "hello!!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
 
