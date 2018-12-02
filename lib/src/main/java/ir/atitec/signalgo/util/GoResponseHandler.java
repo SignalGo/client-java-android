@@ -97,9 +97,10 @@ public abstract class GoResponseHandler<T> {
             if (getCore() != null && getCore().getResponseClass() != null)
                 return typeToken.getSubtype(getCore().getResponseClass()).getType();
             return typeToken.getType();
-        } else {
+        } else if (typeToken2 != null) {
             return typeToken2.getType();
         }
+        return null;
     }
 
     public void setTypeToken(TypeToken<Response<T>> typeToken) {

@@ -21,6 +21,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
@@ -34,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import ir.atitec.signalgo.annotations.GoHeader;
@@ -53,7 +55,8 @@ public class HttpCore extends Core {
     private boolean cookieEnabled = false;
     private RestTemplate restTemplate;
     private List<String> cookie;
-
+    private boolean setUtf8 = true;
+    private boolean ignoreNull = true;
 
     private HttpCore() {
 
@@ -89,11 +92,11 @@ public class HttpCore extends Core {
 //    }
 
     private void send(String url, String[] keys, GoResponseHandler responseHandler, GoMethodName.MethodType methodType, Object... params) {
-
+        String link = responseHandler.getGoMethodName().serverUrl().equals("") ? getUrl() + url : responseHandler.getGoMethodName().serverUrl() + url;
         if (Build.VERSION.SDK_INT > 16)
-            new MyAsync(getUrl() + url, responseHandler, methodType).setKeys(keys).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+            new MyAsync(link, responseHandler, methodType).setKeys(keys).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
         else
-            new MyAsync(getUrl() + url, responseHandler, methodType).setKeys(keys).execute(params);
+            new MyAsync(link, responseHandler, methodType).setKeys(keys).execute(params);
     }
 
 //    private void get(String url, GoResponseHandler responseHandler) {
@@ -145,6 +148,10 @@ public class HttpCore extends Core {
         private void setHttpMethod(GoMethodName.MethodType methodType) {
             if (methodType.getId() == GoMethodName.MethodType.httpGet.getId()) {
                 httpMethod = HttpMethod.GET;
+            } else if (methodType.getId() == GoMethodName.MethodType.httpPut_json.getId() || methodType.getId() == GoMethodName.MethodType.httpPut_formData.getId()) {
+                httpMethod = HttpMethod.PUT;
+            } else if (methodType.getId() == GoMethodName.MethodType.httpDelete.getId()) {
+                httpMethod = HttpMethod.DELETE;
             } else {
                 httpMethod = HttpMethod.POST;
             }
@@ -156,6 +163,14 @@ public class HttpCore extends Core {
 
                 ResponseEntity responseEntity =
                         restTemplate.exchange(url, httpMethod, getEntity(objects, keys, responseHandler.getGoHeaders()), String.class);
+                if (responseEntity.getStatusCode() != HttpStatus.OK) {
+                    Log.e("HttpCore", url + "  " + responseEntity.toString());
+                    return responseEntity;
+                }
+                if (responseHandler.getType() == null) {
+                    Log.d("HttpCore", url + "  " + responseEntity.toString());
+                    return responseEntity;
+                }
                 Object response = getGoConvertorHelper().deserialize((String) responseEntity.getBody(), getObjectMapper().constructType(responseHandler.getType()));
                 if (cookieEnabled) {
                     Object o = responseEntity.getHeaders().get("Set-Cookie");
@@ -196,7 +211,7 @@ public class HttpCore extends Core {
                     FileSystemResource value = new FileSystemResource((File) objects[0]);
                     map.add("file", value);
                     httpEntity = new HttpEntity(map, httpHeaders);
-                } else if (methodType == GoMethodName.MethodType.httpPost_formData) {
+                } else if (methodType == GoMethodName.MethodType.httpPost_formData || methodType == GoMethodName.MethodType.httpPut_formData) {
                     httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
                     LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
                     for (int i = 0; i < keys.length; i++) {
@@ -231,6 +246,24 @@ public class HttpCore extends Core {
                         }
                         httpEntity = new HttpEntity(jsonObject.toString(), httpHeaders);
                     }
+                } else if (methodType == GoMethodName.MethodType.httpPut_json) {
+                    if (objects.length == 1) {
+                        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                        httpEntity = new HttpEntity(objects[0], httpHeaders);
+                    } else {
+                        if (keys != null) {
+                            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                            JSONObject jsonObject = new JSONObject();
+                            for (int i = 0; i < keys.length; i++) {
+                                try {
+                                    jsonObject.put(keys[i], objects[i]);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            httpEntity = new HttpEntity(jsonObject.toString(), httpHeaders);
+                        }
+                    }
                 }
             } else {
                 httpEntity = new HttpEntity(httpHeaders);
@@ -244,8 +277,26 @@ public class HttpCore extends Core {
         return cookieEnabled;
     }
 
-    public Core setCookieEnabled(boolean cookieEnabled) {
+    public HttpCore setCookieEnabled(boolean cookieEnabled) {
         this.cookieEnabled = cookieEnabled;
+        return this;
+    }
+
+    public boolean isSetUtf8() {
+        return setUtf8;
+    }
+
+    public HttpCore setSetUtf8(boolean setUtf8) {
+        this.setUtf8 = setUtf8;
+        return this;
+    }
+
+    public boolean isIgnoreNull() {
+        return ignoreNull;
+    }
+
+    public HttpCore setIgnoreNull(boolean ignoreNull) {
+        this.ignoreNull = ignoreNull;
         return this;
     }
 
@@ -258,7 +309,10 @@ public class HttpCore extends Core {
         FormHttpMessageConverter form = new FormHttpMessageConverter();
         form.addPartConverter(m);
         restTemplate.getMessageConverters().add(form);
-        restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        if (setUtf8)
+            restTemplate.getMessageConverters().add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+        else
+            restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
         restTemplate.getMessageConverters().add(m);
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 
@@ -296,25 +350,35 @@ public class HttpCore extends Core {
                 break;
             }
 
-            try {
-                String str;
-                if (params[i] instanceof String) {
-                    str = (String) params[i];
-                } else {
-                    str = getObjectMapper().writeValueAsString(params[i]);
+            if (params[i] == null && ignoreNull) {
+                int a1 = url.lastIndexOf("?", index);
+                int a2 = url.lastIndexOf("&", index)-1;
+                int a3 = url.lastIndexOf("/", index);
+                int max = Math.max(Math.max(a1, a2), a3);
+                url = url.substring(0, max + 1) + url.substring(Math.min(index2 + 2, url.length()), url.length());
+            } else {
+                try {
+                    String str;
+                    if (params[i] instanceof String) {
+                        str = (String) params[i];
+                    } else {
+                        str = getObjectMapper().writeValueAsString(params[i]);
+                    }
+                    url = url.replace("{" + url.substring(index + 1, index2) + "}", str + "");
+                    int x = 0;
+                    if ((x = str.indexOf("}")) != -1) {
+                        index += x;
+                        index2 += x;
+                    }
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
                 }
-                url = url.replace("{" + url.substring(index + 1, index2) + "}", str + "");
-                int x = 0;
-                if ((x = str.indexOf("}")) != -1) {
-                    index += x;
-                    index2 += x;
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
             }
             i++;
         } while (true);
-
+        if (url.length() > 0 && url.charAt(url.length() - 1) == '?') {
+            url = url.substring(0, url.length() - 1);
+        }
         Object[] pa = {};
 
         if (params.length > i) {
@@ -331,17 +395,21 @@ public class HttpCore extends Core {
                 send(url, null, responseHandler, methodName.type(), pa);
             else
                 throw new RuntimeException("if you have more than one param, you must choose jsonPost or formDataPost");
-        } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_json.getId()) {
-            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
-        } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_formData.getId()) {
-            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
-        } else if (methodName.type().getId() == GoMethodName.MethodType.httpUploadFile.getId()) {
+        }
+//        else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_json.getId()) {
+//            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
+//        } else if (methodName.type().getId() == GoMethodName.MethodType.httpPost_formData.getId()) {
+//
+//        }
+        else if (methodName.type().getId() == GoMethodName.MethodType.httpUploadFile.getId()) {
             if (params.length == 1) {
                 File f = (File) params[i];
                 send(url, null, responseHandler, methodName.type(), f);
             } else {
                 throw new RuntimeException("upload file must have just one param for post and other param must send with GET!!");
             }
+        } else {
+            send(url, methodName.multipartKeys(), responseHandler, methodName.type(), pa);
         }
     }
 
