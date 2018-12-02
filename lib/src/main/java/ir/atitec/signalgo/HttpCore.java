@@ -352,7 +352,7 @@ public class HttpCore extends Core {
 
             if (params[i] == null && ignoreNull) {
                 int a1 = url.lastIndexOf("?", index);
-                int a2 = url.lastIndexOf("&", index)-1;
+                int a2 = url.lastIndexOf("&", index) - 1;
                 int a3 = url.lastIndexOf("/", index);
                 int max = Math.max(Math.max(a1, a2), a3);
                 url = url.substring(0, max + 1) + url.substring(Math.min(index2 + 2, url.length()), url.length());
@@ -402,7 +402,7 @@ public class HttpCore extends Core {
 //
 //        }
         else if (methodName.type().getId() == GoMethodName.MethodType.httpUploadFile.getId()) {
-            if (params.length == 1) {
+            if (i + 1 == params.length) {
                 File f = (File) params[i];
                 send(url, null, responseHandler, methodName.type(), f);
             } else {
