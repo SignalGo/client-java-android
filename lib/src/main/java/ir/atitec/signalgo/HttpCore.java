@@ -217,14 +217,14 @@ public class HttpCore extends Core {
                     for (int i = 0; i < keys.length; i++) {
                         if (objects[i] != null) {
                             try {
-                                String str = "";
-                                if (objects[i] instanceof String) {
-                                    str = (String) objects[i];
-                                } else {
-                                    str = getObjectMapper().writeValueAsString(objects[i]);
-                                }
-                                map.add(keys[i], str);
-                            } catch (JsonProcessingException e) {
+//                                String str = "";
+//                                if (objects[i] instanceof String) {
+//                                    str = (String) objects[i];
+//                                } else {
+//                                    str = new String(getObjectMapper().writeValueAsString(objects[i]).getBytes(),Charset.forName("UTF-8"));
+//                                }
+                                map.add(keys[i], objects[i]);
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
