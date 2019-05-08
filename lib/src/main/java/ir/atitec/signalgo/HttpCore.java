@@ -162,7 +162,7 @@ public class HttpCore extends Core {
             try {
 
                 ResponseEntity responseEntity =
-                        restTemplate.exchange(url, httpMethod, getEntity(objects, keys, responseHandler.getGoHeaders()), String.class);
+                        restTemplate.exchange(url.trim(), httpMethod, getEntity(objects, keys, responseHandler.getGoHeaders()), String.class);
                 if (responseEntity.getStatusCode() != HttpStatus.OK) {
                     Log.e("HttpCore", url + "  " + responseEntity.toString());
                     return responseEntity;
