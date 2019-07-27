@@ -450,8 +450,9 @@ public class HttpCore extends Core {
         return goHeaderList;
     }
 
-    public void addGlobalHeaderList(GoHeader goHeader) {
+    public HttpCore addGlobalHeaderList(GoHeader goHeader) {
         this.goHeaderList.add(goHeader);
+        return this;
     }
 
     public RestTemplate getRestTemplate() {
