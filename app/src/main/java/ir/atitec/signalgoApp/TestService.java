@@ -41,12 +41,12 @@ public class TestService implements ClientDuplex {
         SignalGoCore.instance().callMethod(goResponseHandler, username, password);
     }
 
-    @GoMethodName(name = "Test", type = GoMethodName.MethodType.invoke)
-    public static void test(GoResponseHandler<String> goResponseHandler) {
-        goResponseHandler.setTypeToken2(new TypeToken<String>() {
-        });
-        SignalGoCore.instance().callMethod(goResponseHandler);
-    }
+//    @GoMethodName(name = "Test", type = GoMethodName.MethodType.invoke)
+//    public static void test(GoResponseHandler<String> goResponseHandler) {
+//        goResponseHandler.setTypeToken2(new TypeToken<String>() {
+//        });
+//        SignalGoCore.instance().callMethod(goResponseHandler);
+//    }
 
     @GoMethodName(name = "/{type}/recommendation/launcher?count={count}&offset={offset}", type = GoMethodName.MethodType.httpGet, multipartKeys = {"mac_address", "phone", "device"})
     public static void login(GoResponseHandler<Object> goResponseHandler) {
@@ -81,6 +81,27 @@ public class TestService implements ClientDuplex {
 //        goResponseHandler.addHeader(new GoHeader("Adgdfg", "ASdfdg"));
         HttpCore.instance().callMethod(goResponseHandler, null, 10, null);
     }
+
+
+    @GoMethodName(name = "/Authentication/TestUtf8", serverUrl = "http://dev.atitec.ir:6578", type = GoMethodName.MethodType.httpPost_formData,multipartKeys = {"userInfo"})
+    public static void test(UserInfo userInfo, GoResponseHandler<TestService.UserInfo> goResponseHandler) {
+        goResponseHandler.setTypeToken2(new TypeToken<TestService.UserInfo>() {
+        });
+//        goResponseHandler.addHeader(new GoHeader("Authorization", SharedPreferencesHelper.getToken()));
+        HttpCore.instance().callMethod(goResponseHandler, userInfo);
+    }
+
+    public static class UserInfo {
+        public String username;
+
+        public UserInfo() {
+        }
+
+        public UserInfo(String username) {
+            this.username = username;
+        }
+    }
+
 }
 
 

@@ -14,6 +14,19 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
 import org.joda.time.DateTimeZone;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +37,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -36,6 +50,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.security.KeyStore;
+import java.util.ArrayList;
 import java.util.List;
 
 import ir.atitec.signalgo.annotations.GoHeader;
@@ -45,6 +61,7 @@ import ir.atitec.signalgo.models.Response;
 import ir.atitec.signalgo.util.GoBackStackHelper;
 import ir.atitec.signalgo.util.GoConvertorHelper;
 import ir.atitec.signalgo.util.GoResponseHandler;
+import ir.atitec.signalgo.util.MySSLSocketFactory;
 
 /**
  * Created by hamed on 12/13/2017.
@@ -57,6 +74,8 @@ public class HttpCore extends Core {
     private List<String> cookie;
     private boolean setUtf8 = true;
     private boolean ignoreNull = true;
+    private List<GoHeader> goHeaderList = new ArrayList<>();
+    boolean ignoreSSL = false;
 
     private HttpCore() {
 
@@ -160,7 +179,7 @@ public class HttpCore extends Core {
         @Override
         protected Object doInBackground(Object... objects) {
             try {
-
+                responseHandler.getGoHeaders().addAll(goHeaderList);
                 ResponseEntity responseEntity =
                         restTemplate.exchange(url.trim(), httpMethod, getEntity(objects, keys, responseHandler.getGoHeaders()), String.class);
                 if (responseEntity.getStatusCode() != HttpStatus.OK) {
@@ -328,6 +347,11 @@ public class HttpCore extends Core {
                 Log.d("Core", response.toString());
             }
         });
+
+        if (ignoreSSL) {
+            ClientHttpRequestFactory HttpComponentsClientHttpRequestFactory = new org.springframework.http.client.HttpComponentsClientHttpRequestFactory(getNewHttpClient());
+            restTemplate.setRequestFactory(HttpComponentsClientHttpRequestFactory);
+        }
     }
 
     @Override
@@ -352,7 +376,7 @@ public class HttpCore extends Core {
 
             if (params[i] == null && ignoreNull) {
                 int a1 = url.lastIndexOf("?", index);
-                int a2 = url.lastIndexOf("&", index)-1;
+                int a2 = url.lastIndexOf("&", index) - 1;
                 int a3 = url.lastIndexOf("/", index);
                 int max = Math.max(Math.max(a1, a2), a3);
                 url = url.substring(0, max + 1) + url.substring(Math.min(index2 + 2, url.length()), url.length());
@@ -413,5 +437,49 @@ public class HttpCore extends Core {
         }
     }
 
+    public boolean isIgnoreSSL() {
+        return ignoreSSL;
+    }
 
+    public HttpCore setIgnoreSSL(boolean ignoreSSL) {
+        this.ignoreSSL = ignoreSSL;
+        return this;
+    }
+
+    public List<GoHeader> getGlobalHeaderList() {
+        return goHeaderList;
+    }
+
+    public void addGlobalHeaderList(GoHeader goHeader) {
+        this.goHeaderList.add(goHeader);
+    }
+
+    public RestTemplate getRestTemplate() {
+        return restTemplate;
+    }
+
+
+    private HttpClient getNewHttpClient() {
+        try {
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
+
+            MySSLSocketFactory sf = new MySSLSocketFactory(trustStore);
+            sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+            HttpParams params = new BasicHttpParams();
+            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+
+            SchemeRegistry registry = new SchemeRegistry();
+            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            registry.register(new Scheme("https", sf, 443));
+
+            ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
+
+            return new DefaultHttpClient(ccm, params);
+        } catch (Exception e) {
+            return new DefaultHttpClient();
+        }
+    }
 }

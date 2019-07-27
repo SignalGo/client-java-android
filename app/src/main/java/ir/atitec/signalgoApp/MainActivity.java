@@ -124,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
 //
 //            }
 //        });
-        TestService.testNull(new GoResponseHandler<Object>() {
+        TestService.test(new TestService.UserInfo("علی"), new GoResponseHandler<TestService.UserInfo>() {
             @Override
-            public void onSuccess(Object o) {
-
+            public void onSuccess(TestService.UserInfo userInfo) {
+                Toast.makeText(MainActivity.this, userInfo.username, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -160,12 +160,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Boolean aBoolean) {
                 Toast.makeText(MainActivity.this, "response :" + aBoolean, Toast.LENGTH_SHORT).show();
-                TestService.test(new GoResponseHandler<String>() {
-                    @Override
-                    public void onSuccess(String s) {
-                        Toast.makeText(MainActivity.this, "response2 : " + s, Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                TestService.test(new GoResponseHandler<String>() {
+//                    @Override
+//                    public void onSuccess(String s) {
+//                        Toast.makeText(MainActivity.this, "response2 : " + s, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
             }
         });
     }
