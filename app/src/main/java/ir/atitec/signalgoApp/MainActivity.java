@@ -1,7 +1,6 @@
 package ir.atitec.signalgoApp;
 
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -13,24 +12,11 @@ import android.widget.Toast;
 //
 //import org.joda.time.DateTime;
 
-import com.google.common.reflect.TypeToken;
-
-import org.joda.time.DateTime;
-
-import java.io.IOException;
-import java.util.List;
-
 import ir.atitec.signalgo.HttpCore;
-import ir.atitec.signalgo.SignalGoCore;
 import ir.atitec.signalgo.annotations.GoError;
-import ir.atitec.signalgo.interfaces.ConnectionObserver;
 import ir.atitec.signalgo.interfaces.MonitorableMessage;
-import ir.atitec.signalgo.interfaces.SessionResponse;
 import ir.atitec.signalgo.models.Response;
 import ir.atitec.signalgo.util.GoResponseHandler;
-import ir.atitec.signalgo.util.GoSocketListener;
-import ir.atitec.signalgo.util.RefrenceAnalysor;
-import ir.atitec.signalgo.util.SignalGoSerializer;
 
 public class MainActivity extends AppCompatActivity {
 
